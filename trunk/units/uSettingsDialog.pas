@@ -364,6 +364,18 @@ begin
             begin
                 GlobalProtocolVersion := GOD;
             end;            //Goddess of Destruction
+            11 :
+            begin
+                GlobalProtocolVersion := GOD583;
+            end;
+            12 :
+            begin
+                GlobalProtocolVersion := GOD603;
+            end;
+            13 :
+            begin
+                GlobalProtocolVersion := GODxxx;
+            end;
         end;
         reload;     //перечитаем инишки
 
