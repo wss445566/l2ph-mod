@@ -509,7 +509,8 @@ var
     temp : widestring;
     d : integer;
 begin
-    d := PosEx(#0#0, pck, index) - index;
+//    d := PosEx(#0#0, pck, index) - index;
+    d := get_ws_length(pck, index);
     if (d mod 2) = 1 then
     begin
         Inc(d);
