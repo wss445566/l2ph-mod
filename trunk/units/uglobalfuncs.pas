@@ -134,6 +134,7 @@ var
 
     GlobalRawAllowed : boolean; //глобальная установка не разрешающая освобожать фреймы при обрыве соединений
     Options, PacketsINI : TMemIniFile;
+    GetFuncINI : TMemIniFile;
 
 implementation
 
@@ -264,6 +265,11 @@ end;
 
 procedure Reload;
 begin
+    if getfuncini <> nil then
+    begin
+        getfuncini.free;
+    end;
+    getfuncini := TMemIniFile.Create(AppPath + 'settings\get.ini');
   // для Lineage II
     SysMsgIdList.Clear;
     AugmentList.Clear;
