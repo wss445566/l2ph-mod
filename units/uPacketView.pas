@@ -94,6 +94,7 @@ type
         function GetF3(const ar1 : integer) : string;
     //yet another parser
         procedure fParseJ;
+        function GetFromIni(const ar1 : integer) : string;
     public
     { Public declarations }
         currentpacket : string;
@@ -3114,6 +3115,10 @@ begin
     if param1 = 'AUGMENTID' then
     begin
         value := GetAugment(strtoint(value));
+    end
+    else
+    begin
+        value := GetFromIni(strtoint(value));
     end;
     result := true;
 end;
@@ -3142,6 +3147,13 @@ begin
         rvFuncs.Invalidate;
         rvFuncs.SetFocus;
     end;
+end;
+
+
+function TfPacketView.GetFromIni(const ar1 : integer) : string;
+begin
+    result := getfuncini.ReadString(param1, inttostr(ar1), 'undefined');
+    result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
 end;
 
 end.
