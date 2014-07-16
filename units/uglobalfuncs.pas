@@ -104,7 +104,7 @@ type
         CHRONICLE4, CHRONICLE5,
         INTERLUDE,
         GRACIA, GRACIAFINAL, GRACIAEPILOGUE,
-        FREYA, HIGHFIVE, GOD);
+        FREYA, HIGHFIVE, GOD, GOD583, GOD603, GODxxx);
 
 var
     GlobalProtocolVersion : TProtocolVersion = AION;

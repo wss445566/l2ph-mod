@@ -84,6 +84,8 @@ object fPacketFilter: TfPacketFilter
         Groups = <>
         ExtendedColumns = <
           item
+          end
+          item
           end>
       end
     end

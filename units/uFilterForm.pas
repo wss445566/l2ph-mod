@@ -251,6 +251,18 @@ begin
         begin
             LoadPktIni('packetsGOD.ini');
         end;                        //пакеты для Goddess of Destruction
+        GOD583 :
+        begin
+            LoadPktIni('packetsGOD583.ini');
+        end;
+        GOD603 :
+        begin
+            LoadPktIni('packetsGOD603.ini');
+        end;
+        GODxxx :
+        begin
+            LoadPktIni('packetsGODxxx.ini');
+        end;
     end;
 
     filterS := Options.ReadString('Snifer', 'notFS', '');
