@@ -573,6 +573,7 @@ begin
     end
     else
     begin
+        codePage := 0;
         l := WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, nil, 0, nil, nil);
         SetLength(Result, l - 1);
         if l > 1 then
