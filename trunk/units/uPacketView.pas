@@ -227,7 +227,8 @@ begin
         's' :
         begin
             templateindex := 16;
-            d := PosEx(#0#0, PktStr, PosInPkt) - PosInPkt;
+//            d := PosEx(#0#0, PktStr, PosInPkt) - PosInPkt;
+            d := get_ws_length(PktStr, PosInPkt);
             if (d mod 2) = 1 then
             begin
                 Inc(d);

@@ -46,6 +46,9 @@ type
         Id : integer;
         tunel : Tobject;
     end;
+
+function get_ws_length(s : string; index : integer) : integer;
+function text2hexstring(s : string) : string;
   //конвертации//
 function SymbolEntersCount(s : string) : string;
 function HexToString(Hex : string) : string;
@@ -909,5 +912,29 @@ begin
         end;
     end;
 end;
+
+function get_ws_length(s : string; index : integer) : integer;
+var
+    end_index : integer;
+begin
+    end_index := index;
+    while
+        (Length(s) - (end_index - index) >= 2) and not ((s[end_index] = #0) and (s[end_index + 1] = #0)) do
+    begin
+        Inc(end_index, 2);
+    end;
+    result := end_index - index;
+end;
+
+function text2hexstring(s : string) : string;
+var
+    i : integer;
+begin
+    for i := 1 to Length(s) do
+    begin
+        result := result + inttohex(ord(s[i]), 2);
+    end;
+end;
+
 
 end.

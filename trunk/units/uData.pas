@@ -754,7 +754,8 @@ begin
     if sMethodName = 'READS' then
     begin
         pct := Scripter.Variables['pck'];
-        d := PosEx(#0#0, pct, integer(Params[0])) - integer(Params[0]);
+//        d := PosEx(#0#0, pct, integer(Params[0])) - integer(Params[0]);
+        d := get_ws_length(pct, integer(Params[0]));
         if (d mod 2) = 1 then
         begin
             Inc(d);
