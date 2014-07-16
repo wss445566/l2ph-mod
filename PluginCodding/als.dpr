@@ -6,256 +6,252 @@ library als;
 {$define RELEASE} // для совместимости с релизом пакетхака, при дебуге можно закоментировать
 
 uses
-  FastMM4 in '..\fastmm\FastMM4.pas',
-  FastMM4Messages in '..\fastmm\FastMM4Messages.pas',
-  usharedstructs in '..\units\usharedstructs.pas';
+    FastMM4 in '..\fastmm\FastMM4.pas',
+    FastMM4Messages in '..\fastmm\FastMM4Messages.pas',
+    usharedstructs in '..\units\usharedstructs.pas';
 
 type
-  TalsStruct = record
-    userFormHandle: THandle;
-    ConnectInfo : tConnectInfo;
-  end;
-  PalsStruct = ^TalsStruct;
+    TalsStruct = record
+        userFormHandle : THandle;
+        ConnectInfo : tConnectInfo;
+    end;
+    PalsStruct = ^TalsStruct;
 
 var
-  ps: TPluginStruct;
-  pals: PalsStruct;
+    ps : TPluginStruct;
+    pals : PalsStruct;
 
-function GetPluginInfo(const ver: Integer): PChar; stdcall;
+function GetPluginInfo(const ver : integer) : pchar; stdcall;
 begin
-  Result:='Plugin for support not Delphi plugins';
-end;                                            
-
-function SetStruct(const struct: PPluginStruct): Boolean; stdcall;
-begin
-  ps:=struct^;
-  pals:=@ps.userFormHandle;
-  Result:=True;
+    Result := 'Plugin for support not Delphi plugins';
 end;
 
-function GetALSStruct: PalsStruct; stdcall;
+function SetStruct(const struct : PPluginStruct) : boolean; stdcall;
 begin
-  Result:=pals;
+    ps := struct^;
+    pals := @ps.userFormHandle;
+    Result := true;
 end;
 
-function ReadC(const pck: string; const index:integer):byte; stdcall;
+function GetALSStruct : PalsStruct; stdcall;
 begin
-  Result:=ps.ReadC(pck,index);
+    Result := pals;
 end;
 
-function ReadH(const pck: string; const index:integer):word; stdcall;
+function ReadC(const pck : string; const index : integer) : byte; stdcall;
 begin
-  Result:=ps.ReadH(pck,index);
+    Result := ps.ReadC(pck, index);
 end;
 
-function ReadD(const pck: string; const index:integer):integer; stdcall;
+function ReadH(const pck : string; const index : integer) : word; stdcall;
 begin
-  Result:=ps.ReadD(pck,index);
+    Result := ps.ReadH(pck, index);
 end;
 
-function ReadF(const pck: string; const index:integer):double; stdcall;
+function ReadD(const pck : string; const index : integer) : integer; stdcall;
 begin
-  Result:=ps.ReadF(pck,index);
+    Result := ps.ReadD(pck, index);
 end;
 
-function ReadS(const pck: string; const index:integer):string; stdcall;
+function ReadF(const pck : string; const index : integer) : double; stdcall;
 begin
-  Result:=ps.ReadS(pck,index);
+    Result := ps.ReadF(pck, index);
 end;
 
-function ReadCEx(const pck; const index:integer):byte; stdcall;
+function ReadS(const pck : string; const index : integer) : string; stdcall;
 begin
-  Result:=ps.ReadCEx(pck,index);
+    Result := ps.ReadS(pck, index);
 end;
 
-function ReadHEx(const pck; const index:integer):word; stdcall;
+function ReadCEx(const pck; const index : integer) : byte; stdcall;
 begin
-  Result:=ps.ReadHEx(pck,index);
+    Result := ps.ReadCEx(pck, index);
 end;
 
-function ReadDEx(const pck; const index:integer):integer; stdcall;
+function ReadHEx(const pck; const index : integer) : word; stdcall;
 begin
-  Result:=ps.ReadDEx(pck,index);
+    Result := ps.ReadHEx(pck, index);
 end;
 
-function ReadFEx(const pck; const index:integer):double; stdcall;
+function ReadDEx(const pck; const index : integer) : integer; stdcall;
 begin
-  Result:=ps.ReadFEx(pck,index);
+    Result := ps.ReadDEx(pck, index);
 end;
 
-function ReadSEx(const pck; const index:integer):PChar; stdcall;
+function ReadFEx(const pck; const index : integer) : double; stdcall;
 begin
-  Result:=@ps.ReadSEx(pck,index)[1];
+    Result := ps.ReadFEx(pck, index);
 end;
 
-procedure WriteC(var pck: string; const v:byte;    ind:integer=-1); stdcall;
+function ReadSEx(const pck; const index : integer) : pchar; stdcall;
 begin
-  ps.WriteC(pck,v,ind);
+    Result := @ps.ReadSEx(pck, index)[1];
 end;
 
-procedure WriteH(var pck: string; const v:word;    ind:integer=-1); stdcall;
+procedure WriteC(var pck : string; const v : byte; ind : integer = -1); stdcall;
 begin
-  ps.WriteH(pck,v,ind);
+    ps.WriteC(pck, v, ind);
 end;
 
-procedure WriteD(var pck: string; const v:integer; ind:integer=-1); stdcall;
+procedure WriteH(var pck : string; const v : word; ind : integer = -1); stdcall;
 begin
-  ps.WriteD(pck,v,ind);
+    ps.WriteH(pck, v, ind);
 end;
 
-procedure WriteF(var pck: string; const v:double;  ind:integer=-1); stdcall;
+procedure WriteD(var pck : string; const v : integer; ind : integer = -1); stdcall;
 begin
-  ps.WriteF(pck,v,ind);
+    ps.WriteD(pck, v, ind);
 end;
 
-procedure WriteS(var pck: string; const v:string;  ind:integer=-1); stdcall;
+procedure WriteF(var pck : string; const v : double; ind : integer = -1); stdcall;
 begin
-  ps.WriteS(pck,v,ind);
+    ps.WriteF(pck, v, ind);
 end;
 
-procedure WriteCEx(var pck; const v:byte;    ind:integer=-1); stdcall;
+procedure WriteS(var pck : string; const v : string; ind : integer = -1); stdcall;
 begin
-  ps.WriteCEx(pck,v,ind);
+    ps.WriteS(pck, v, ind);
 end;
 
-procedure WriteHEx(var pck; const v:word;    ind:integer=-1); stdcall;
+procedure WriteCEx(var pck; const v : byte; ind : integer = -1); stdcall;
 begin
-  ps.WriteHEx(pck,v,ind);
+    ps.WriteCEx(pck, v, ind);
 end;
 
-procedure WriteDEx(var pck; const v:integer; ind:integer=-1); stdcall;
+procedure WriteHEx(var pck; const v : word; ind : integer = -1); stdcall;
 begin
-  ps.WriteDEx(pck,v,ind);
+    ps.WriteHEx(pck, v, ind);
 end;
 
-procedure WriteFEx(var pck; const v:double;  ind:integer=-1); stdcall;
+procedure WriteDEx(var pck; const v : integer; ind : integer = -1); stdcall;
 begin
-  ps.WriteFEx(pck,v,ind);
+    ps.WriteDEx(pck, v, ind);
 end;
 
-procedure WriteSEx(var pck; const v:PChar;  ind:integer=-1); stdcall;
+procedure WriteFEx(var pck; const v : double; ind : integer = -1); stdcall;
 begin
-  ps.WriteSEx(pck,v,ind);
+    ps.WriteFEx(pck, v, ind);
 end;
 
-function CreateAndRunTimerThread(const interval, usrParam: Cardinal;
-                                 const OnTimerProc: TOnTimer): Pointer; stdcall;
+procedure WriteSEx(var pck; const v : pchar; ind : integer = -1); stdcall;
 begin
-  Result:=ps.CreateAndRunTimerThread(interval, usrParam, OnTimerProc);
+    ps.WriteSEx(pck, v, ind);
 end;
 
-procedure ChangeTimerThread(const timer: Pointer; const interval: Cardinal;
-                            const usrParam: Cardinal = $ffffffff;
-                            const OnTimerProc: TOnTimer = nil); stdcall;
+function CreateAndRunTimerThread(const interval, usrParam : cardinal; const OnTimerProc : TOnTimer) : Pointer; stdcall;
 begin
-  ps.ChangeTimerThread(timer, interval, usrParam, OnTimerProc);
+    Result := ps.CreateAndRunTimerThread(interval, usrParam, OnTimerProc);
 end;
 
-procedure DestroyTimerThread(var timer: Pointer); stdcall;
+procedure ChangeTimerThread(const timer : Pointer; const interval : cardinal; const usrParam : cardinal = $ffffffff; const OnTimerProc : TOnTimer = nil); stdcall;
 begin
-  ps.DestroyTimerThread(timer);
+    ps.ChangeTimerThread(timer, interval, usrParam, OnTimerProc);
 end;
 
-function StringToHex(str1,Separator: string):string; stdcall;
+procedure DestroyTimerThread(var timer : Pointer); stdcall;
 begin
-  Result:=ps.StringToHex(str1,Separator);
+    ps.DestroyTimerThread(timer);
 end;
 
-function HexToString(Hex:string):string; stdcall;
+function StringToHex(str1, Separator : string) : string; stdcall;
 begin
-  Result:=ps.HexToString(Hex);
+    Result := ps.StringToHex(str1, Separator);
 end;
 
-function DataPckToStrPck(var pck): string; stdcall;
+function HexToString(Hex : string) : string; stdcall;
 begin
-  Result:=ps.DataPckToStrPck(pck);
+    Result := ps.HexToString(Hex);
 end;
 
-procedure SendPacketData(var pck; const tid: integer; const ToServer: Boolean); stdcall;
+function DataPckToStrPck(var pck) : string; stdcall;
 begin
-  ps.SendPacketData(pck, tid, ToServer);
+    Result := ps.DataPckToStrPck(pck);
 end;
 
-procedure SendPacketStr(pck: string; const tid: integer; const ToServer: Boolean); stdcall;
+procedure SendPacketData(var pck; const tid : integer; const ToServer : boolean); stdcall;
 begin
-  ps.SendPacketStr(pck, tid, ToServer);
+    ps.SendPacketData(pck, tid, ToServer);
 end;
 
-procedure SendPacket(Size: Word; pck: string; tid: integer; ToServer: Boolean); stdcall;
+procedure SendPacketStr(pck : string; const tid : integer; const ToServer : boolean); stdcall;
 begin
-  ps.SendPacket(Size, pck, tid, ToServer);
+    ps.SendPacketStr(pck, tid, ToServer);
 end;
 
-function getConnectionName(id: integer):PChar; stdcall;
+procedure SendPacket(Size : word; pck : string; tid : integer; ToServer : boolean); stdcall;
 begin
-  Result:=PChar(ps.getConnectionName(id));
+    ps.SendPacket(Size, pck, tid, ToServer);
 end;
 
-function getConnectioidByName(name: PChar):integer; stdcall;
+function getConnectionName(id : integer) : pchar; stdcall;
 begin
-  Result:=ps.getConnectioidByName(name);
+    Result := pchar(ps.getConnectionName(id));
 end;
 
-Function GoFirstConnection:boolean; stdcall;
+function getConnectioidByName(name : pchar) : integer; stdcall;
 begin
-  Result:=ps.GoFirstConnection;
+    Result := ps.getConnectioidByName(name);
 end;
 
-Function GoNextConnection:boolean; stdcall;
+function GoFirstConnection : boolean; stdcall;
 begin
-  Result:=ps.GoNextConnection;
+    Result := ps.GoFirstConnection;
 end;
 
-procedure ShowUserForm(ActivateOnly:boolean); stdcall;
+function GoNextConnection : boolean; stdcall;
 begin
-  ps.ShowUserForm(ActivateOnly);
+    Result := ps.GoNextConnection;
 end;
 
-Procedure HideUserForm; stdcall;
+procedure ShowUserForm(ActivateOnly : boolean); stdcall;
 begin
-  HideUserForm;
+    ps.ShowUserForm(ActivateOnly);
+end;
+
+procedure HideUserForm; stdcall;
+begin
+    HideUserForm;
 end;
 
 exports
-  GetPluginInfo,
-  SetStruct,
-  ReadC,
-  ReadH,
-  ReadD,
-  ReadF,
-  ReadS,
-  ReadCEx,
-  ReadHEx,
-  ReadDEx,
-  ReadFEx,
-  ReadSEx,
-  WriteC,
-  WriteH,
-  WriteD,
-  WriteF,
-  WriteS,
-  WriteCEx,
-  WriteHEx,
-  WriteDEx,
-  WriteFEx,
-  WriteSEx,
-  CreateAndRunTimerThread,
-  ChangeTimerThread,
-  DestroyTimerThread,
-  StringToHex,
-  HexToString,
-  DataPckToStrPck,
-  SendPacketData,
-  SendPacketStr,
-  SendPacket,
-  getConnectionName,
-  getConnectioidByName,
-  GoFirstConnection,
-  GoNextConnection,
-  ShowUserForm,
-  HideUserForm,
-  GetALSStruct;
+    GetPluginInfo,
+    SetStruct,
+    ReadC,
+    ReadH,
+    ReadD,
+    ReadF,
+    ReadS,
+    ReadCEx,
+    ReadHEx,
+    ReadDEx,
+    ReadFEx,
+    ReadSEx,
+    WriteC,
+    WriteH,
+    WriteD,
+    WriteF,
+    WriteS,
+    WriteCEx,
+    WriteHEx,
+    WriteDEx,
+    WriteFEx,
+    WriteSEx,
+    CreateAndRunTimerThread,
+    ChangeTimerThread,
+    DestroyTimerThread,
+    StringToHex,
+    HexToString,
+    DataPckToStrPck,
+    SendPacketData,
+    SendPacketStr,
+    SendPacket,
+    getConnectionName,
+    getConnectioidByName,
+    GoFirstConnection,
+    GoNextConnection,
+    ShowUserForm,
+    HideUserForm,
+    GetALSStruct;
 
 begin
 end.
-

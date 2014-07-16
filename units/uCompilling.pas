@@ -3,29 +3,44 @@ unit uCompilling;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, fs_iinterpreter, uscripteditor, siComp;
+    Windows,
+    Messages,
+    SysUtils,
+    Variants,
+    Classes,
+    Graphics,
+    Controls,
+    Forms,
+    Dialogs,
+    StdCtrls,
+    fs_iinterpreter,
+    uscripteditor,
+    siComp;
 
 type
-  TfCompilling = class(TForm)
-    Label1: TLabel;
-    Label2: TLabel;
-    lang: TsiLang;
-    procedure FormDeactivate(Sender: TObject);
-  private
+    TfCompilling = class (TForm)
+        Label1 : TLabel;
+        Label2 : TLabel;
+        lang : TsiLang;
+        procedure FormDeactivate(Sender : TObject);
+    private
     { Private declarations }
-  public
-    AssignedSEditor: tfscripteditor;
-    procedure ActivateMe;
-    procedure DeActivateMe;
+    public
+        AssignedSEditor : tfscripteditor;
+        procedure ActivateMe;
+        procedure DeActivateMe;
     { Public declarations }
-  end;
+    end;
 
 var
-  fCompilling: TfCompilling;
+    fCompilling : TfCompilling;
 
 implementation
-uses umain, uscripts, uMainReplacer;
+
+uses
+    umain,
+    uscripts,
+    uMainReplacer;
 
 {$R *.dfm}
 
@@ -33,32 +48,38 @@ uses umain, uscripts, uMainReplacer;
 
 procedure TfCompilling.ActivateMe;
 begin
-  if AssignedSEditor = nil then exit;
-  if AssignedSEditor.assignedTScript = nil then exit;
-
-  if fMainReplacer.Visible then
+    if AssignedSEditor = nil then
     begin
-      fMainReplacer.Status.caption := Label1.caption +': '+Tscript(AssignedSEditor.assignedTScript).ScriptName;
-      fMainReplacer.Repaint;
-      Application.ProcessMessages;
-      exit;
+        exit;
     end;
-    
-  Label2.Caption := Tscript(AssignedSEditor.assignedTScript).ScriptName;
-  show;
-  Application.ProcessMessages;
+    if AssignedSEditor.assignedTScript = nil then
+    begin
+        exit;
+    end;
+
+    if fMainReplacer.Visible then
+    begin
+        fMainReplacer.Status.caption := Label1.caption + ': ' + Tscript(AssignedSEditor.assignedTScript).ScriptName;
+        fMainReplacer.Repaint;
+        Application.ProcessMessages;
+        exit;
+    end;
+
+    Label2.Caption := Tscript(AssignedSEditor.assignedTScript).ScriptName;
+    show;
+    Application.ProcessMessages;
 end;
 
 procedure TfCompilling.DeActivateMe;
 begin
-  hide;
+    hide;
 end;
 
 { tUpdateThread }
 
-procedure TfCompilling.FormDeactivate(Sender: TObject);
+procedure TfCompilling.FormDeactivate(Sender : TObject);
 begin
-  SetWindowPos(handle,HWND_TOP,0,0,0,0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+    SetWindowPos(handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
 end.
