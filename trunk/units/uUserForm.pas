@@ -3,21 +3,29 @@ unit uUserForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls;
+    Windows,
+    Messages,
+    SysUtils,
+    Variants,
+    Classes,
+    Graphics,
+    Controls,
+    Forms,
+    Dialogs,
+    ExtCtrls;
 
 type
-  TUserForm = class(TForm)
-  private
+    TUserForm = class (TForm)
+    private
     { Private declarations }
-  protected
-    procedure CreateParams(var Params : TCreateParams); override;
-  public
+    protected
+        procedure CreateParams(var Params : TCreateParams); override;
+    public
     { Public declarations }
-  end;
+    end;
 
 var
-  UserForm: TUserForm;
+    UserForm : TUserForm;
 
 implementation
 
@@ -25,10 +33,10 @@ implementation
 
 { TfUserForm }
 
-procedure TUserForm.CreateParams(var Params: TCreateParams);
+procedure TUserForm.CreateParams(var Params : TCreateParams);
 begin
-  inherited;
-  Params.ExStyle := Params.ExStyle OR WS_EX_APPWINDOW;
+    inherited;
+    Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
 end;
 
 end.

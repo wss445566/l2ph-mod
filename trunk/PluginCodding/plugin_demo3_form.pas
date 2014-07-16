@@ -3,35 +3,43 @@ unit plugin_demo3_form;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+    Windows,
+    Messages,
+    SysUtils,
+    Variants,
+    Classes,
+    Graphics,
+    Controls,
+    Forms,
+    Dialogs,
+    StdCtrls;
 
 type
-  TMyForm = class(TForm)
-    Button1: TButton;
-    procedure FormCreate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-  private
+    TMyForm = class (TForm)
+        Button1 : TButton;
+        procedure FormCreate(Sender : TObject);
+        procedure Button1Click(Sender : TObject);
+    private
     { Private declarations }
-  public
+    public
     { Public declarations }
-  end;
+    end;
 
 var
-  MyForm: TMyForm;
+    MyForm : TMyForm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TMyForm.FormCreate(Sender: TObject);
+procedure TMyForm.FormCreate(Sender : TObject);
 begin
-Align := alClient;
+    Align := alClient;
 end;
 
-procedure TMyForm.Button1Click(Sender: TObject);
+procedure TMyForm.Button1Click(Sender : TObject);
 begin
-Button1.Caption := Button1.Caption + ')';
+    Button1.Caption := Button1.Caption + ')';
 end;
 
 end.
