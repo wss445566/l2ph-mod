@@ -104,6 +104,10 @@ type
         edMainMutex : TEdit;
         Label3 : TLabel;
         Label8 : TLabel;
+        Labelwlimit : TLabel;
+        Labellooplimit : TLabel;
+        Editwlimit : TEdit;
+        Editlooplimit : TEdit;
         procedure ChkKamaelClick(Sender : TObject);
         procedure ChkGraciaOffClick(Sender : TObject);
         procedure ChkInterceptClick(Sender : TObject);
@@ -168,6 +172,10 @@ begin
     Application.ProcessMessages;
 
     InterfaceEnabled := false;
+    wlimit := Options.ReadInteger('General', 'wlimit', 99);
+    editwlimit.text := inttostr(wlimit);
+    looplimit := Options.ReadInteger('General', 'looplimit', 999);
+    editlooplimit.text := inttostr(looplimit);
 
   //максимальное количество строк в логе
     MaxLinesInLog := Options.ReadInteger('General', 'MaxLinesInLog', 300);
@@ -284,6 +292,8 @@ procedure TfSettings.GenerateSettingsFromInterface;
 begin
     with GlobalSettings do
     begin
+        wlimit := Options.ReadInteger('General', 'wlimit', 99);
+        looplimit := Options.ReadInteger('General', 'looplimit', 999);
     //oldProto := GlobalProtocolVersion;
         isNoDecrypt := ChkNoDecrypt.Checked;
         isChangeParser := ChkChangeParser.Checked;
@@ -416,6 +426,8 @@ begin
     Options.WriteInteger('General', 'MaxLinesInPktLog', MaxLinesInPktLog);
   //коэфф преобразования NpcID, необходим для правильного определения имени НПЦ
     Options.WriteString('general', 'kNpcID', EditkNpcID.Text);
+    Options.WriteString('general', 'wlimit', Editwlimit.Text);
+    Options.WriteString('general', 'looplimit', Editlooplimit.Text);
 
     Options.WriteString('General', 'Clients', isClientsList.Text);
     Options.WriteString('General', 'IgnorPorts', isIgnorePorts.Text);
