@@ -1327,22 +1327,23 @@ procedure TfPacketView.fSwitch();
 var
     i, j : integer;
     end_block : string;
+    switchskipcount, switchdefcount, switchvalue, casedefcount : integer;
 begin
       //распечатываем
     addToDescr(offset, typ, name_, value + hexvalue);
-    tmp_param1 := param1;
-    tmp_param2 := param2;
-    tmp_value := value;
+    switchskipcount := strtoint(param1);
+    switchdefcount := strtoint(param2);
+    switchvalue := strtoint(value);
     end_block := value;
     if value = 'range error' then
     begin
         exit;
     end;
       //проверка, что param1 > 0
-    if strtoint(param1) > 0 then
+    if switchskipcount > 0 then
     begin
         //распечатываем значения всех пропускаемых блоков
-        for i := 1 to StrToInt(tmp_param1) do
+        for i := 1 to switchskipcount do
         begin
             fParse();
             if Func = 'LOOPM' then
@@ -1376,16 +1377,16 @@ begin
             end;
         end;
     end;
-    for i := 1 to StrToInt(tmp_param2) do  //пробегаем по всем case
+    for i := 1 to switchdefcount do  //пробегаем по всем case
     begin
         fParse();
-        tmp_param12 := param2;
+        casedefcount := strtoint(param2);
         if Func = 'CASE' then
         begin
-            if tmp_value = param1 then  //id совпало
+            if switchvalue = strtoint(param1) then  //id совпало
             begin
               //распечатываем значения
-                for j := 1 to StrToInt(tmp_param12) do
+                for j := 1 to casedefcount do
                 begin
                     fParse();
                     if Func = 'LOOPM' then
@@ -1422,7 +1423,58 @@ begin
             else
               //пропускаем значения
             begin
-                for j := 1 to StrToInt(tmp_param12) do
+                for j := 1 to casedefcount do
+                begin
+                    Param0 := GetType(StrIni, PosInIni);
+                    inc(PosInIni);
+                end;
+            end;
+        end
+        else
+        if Func = 'CASEAND' then
+        begin
+            if (switchvalue and strtoint(param1)) = strtoint(param1) then
+            begin
+              //распечатываем значения
+                for j := 1 to casedefcount do
+                begin
+
+                    fParse();
+                    if Func = 'LOOPM' then
+                    begin
+                        fLoopM();
+                    end
+                    else
+                    if Func = 'LOOP' then
+                    begin
+                        fLoop();
+                    end
+                    else
+                    if Func = 'FOR' then
+                    begin
+                        fFor();
+                    end
+                    else
+                    if Func = 'SWITCH' then
+                    begin
+                        fSwitch();
+                    end
+                    else
+                    if Func = 'GET' then
+                    begin
+                        fGet();
+                    end //get(param1, id, value);
+
+                    else
+                    begin
+                        addToDescr(offset, typ, name_, value + hexvalue);
+                    end;
+
+                end;
+            end
+            else
+            begin
+                for j := 1 to casedefcount do
                 begin
                     Param0 := GetType(StrIni, PosInIni);
                     inc(PosInIni);
