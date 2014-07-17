@@ -23,7 +23,7 @@ object fSettings: TfSettings
     Top = 0
     Width = 371
     Height = 498
-    ActivePage = TabSheet1
+    ActivePage = TabSheet8
     Align = alClient
     TabOrder = 0
     object TabSheet8: TTabSheet
@@ -326,6 +326,10 @@ object fSettings: TfSettings
     object TabSheet9: TTabSheet
       Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1077#1088#1077#1093#1074#1072#1090#1072
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Bevel1: TBevel
         Left = 5
         Top = 90
@@ -702,7 +706,7 @@ object fSettings: TfSettings
         object Labelwlimit: TLabel
           Left = 11
           Top = 156
-          Width = 64
+          Width = 56
           Height = 13
           Caption = 'w string limit'
         end
@@ -710,7 +714,7 @@ object fSettings: TfSettings
           Left = 27
           Top = 183
           Width = 40
-          Height = 18
+          Height = 13
           Caption = 'loop limit'
         end
         object chkAutoSavePlog: TCheckBox
