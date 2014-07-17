@@ -23,7 +23,7 @@ object fSettings: TfSettings
     Top = 0
     Width = 371
     Height = 498
-    ActivePage = TabSheet8
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet8: TTabSheet
@@ -326,10 +326,6 @@ object fSettings: TfSettings
     object TabSheet9: TTabSheet
       Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1077#1088#1077#1093#1074#1072#1090#1072
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Bevel1: TBevel
         Left = 5
         Top = 90
@@ -665,13 +661,9 @@ object fSettings: TfSettings
     object TabSheet1: TTabSheet
       Caption = #1044#1086#1087#1086#1083#1085#1080#1090#1077#1083#1100#1085#1086
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChkAllowExit: TCheckBox
         Left = 10
-        Top = 181
+        Top = 215
         Width = 340
         Height = 17
         Hint = #1056#1072#1079#1088#1077#1096#1072#1077#1090' '#1074#1099#1093#1086#1076#1080#1090#1100' '#1080#1079' '#1087#1088#1086#1075#1088#1072#1084#1084#1099' '#1073#1077#1079' '#1085#1072#1076#1086#1077#1076#1083#1080#1074#1086#1075#1086' "'#1074#1099' '#1091#1074#1077#1088#1077#1085#1085#1099'"'
@@ -683,7 +675,7 @@ object fSettings: TfSettings
       end
       object ChkShowLogWinOnStart: TCheckBox
         Left = 10
-        Top = 203
+        Top = 238
         Width = 340
         Height = 17
         Hint = #1040' '#1095#1090#1086' '#1090#1091#1090' '#1085#1077#1087#1086#1085#1103#1090#1085#1086#1075#1086' ? =0)'
@@ -694,18 +686,32 @@ object fSettings: TfSettings
         OnClick = ChkAionClick
       end
       object GroupBox2: TGroupBox
-        Left = 5
-        Top = 10
+        Left = 3
+        Top = 3
         Width = 350
-        Height = 163
+        Height = 206
         Caption = #1059#1084#1086#1083#1095#1072#1085#1080#1103' '#1076#1083#1103' '#1092#1088#1077#1081#1084#1086#1074' '#1089#1086#1077#1076#1080#1085#1077#1085#1080#1081':'
         TabOrder = 5
         object LabelkNpcID: TLabel
-          Left = 5
+          Left = 3
           Top = 137
           Width = 210
           Height = 13
           Caption = #1050#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090' '#1074#1099#1095#1080#1090#1072#1077#1084#1099#1081' '#1080#1079' NpcTypeID'
+        end
+        object Labelwlimit: TLabel
+          Left = 11
+          Top = 156
+          Width = 64
+          Height = 13
+          Caption = 'w string limit'
+        end
+        object Labellooplimit: TLabel
+          Left = 27
+          Top = 183
+          Width = 40
+          Height = 18
+          Caption = 'loop limit'
         end
         object chkAutoSavePlog: TCheckBox
           Left = 5
@@ -814,12 +820,28 @@ object fSettings: TfSettings
           TabOrder = 8
           OnClick = ChkAionClick
         end
+        object Editwlimit: TEdit
+          Left = 73
+          Top = 156
+          Width = 121
+          Height = 21
+          TabOrder = 9
+          Text = '99'
+        end
+        object Editlooplimit: TEdit
+          Left = 73
+          Top = 182
+          Width = 121
+          Height = 21
+          TabOrder = 10
+          Text = '999'
+        end
       end
       object GroupBox3: TGroupBox
-        Left = 5
-        Top = 228
+        Left = 3
+        Top = 262
         Width = 350
-        Height = 57
+        Height = 45
         Caption = #1047#1072#1075#1086#1083#1086#1074#1086#1082' '#1075#1083#1072#1074#1085#1086#1081' '#1092#1086#1088#1084#1099':'
         TabOrder = 0
         object isMainFormCaption: TEdit
@@ -834,7 +856,7 @@ object fSettings: TfSettings
       end
       object GroupBox4: TGroupBox
         Left = 5
-        Top = 287
+        Top = 313
         Width = 350
         Height = 74
         Caption = 'WinClassName '#1075#1083#1072#1074#1085#1086#1081' '#1092#1086#1088#1084#1099':'
@@ -870,7 +892,7 @@ object fSettings: TfSettings
       end
       object GroupBox5: TGroupBox
         Left = 3
-        Top = 367
+        Top = 393
         Width = 350
         Height = 74
         Caption = #1052#1100#1102#1090#1077#1082#1089' '#1075#1083#1072#1074#1085#1086#1081' '#1092#1086#1088#1084#1099':'

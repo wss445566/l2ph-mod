@@ -252,6 +252,30 @@ begin
             templateindex := 17;
             value := '0';
         end;
+        'w' :
+        begin
+            templateindex := 16;
+            d := PWord(@PktStr[PosInPkt])^;
+            Inc(PosInPkt, 2);
+            if (d > wlimit) or (d < 0) then
+            begin
+                value := 'range error';
+                result := value;
+                exit;
+            end;
+            SetLength(pch, d);
+            d := d * 2;
+            if d > 0 then
+            begin
+                Move(PktStr[PosInPkt], pch[1], d * 2);
+            end
+            else
+            begin
+                d := 0;
+            end;
+            value := pch;
+            Inc(PosInPkt, d);
+        end;
     else
     begin
         value := lang.GetTextOrDefault('unknownid' (* 'Неизвестный идентификатор -> ?(name_)!' *));
@@ -1469,6 +1493,11 @@ begin
 //        for i:=1 to StrToInt(tmp_value) do
         for i := 1 to val do
         begin
+            if i > looplimit then
+            begin
+                rvDescryption.AddNL('loop count > ' + inttostr(looplimit), 0, 0);
+                exit;
+            end;
             rvDescryption.AddNL('              ' + lang.GetTextOrDefault('startb' (* '[Начало повторяющегося блока ' *)), 0, 0);
             rvDescryption.AddNL(inttostr(i) + '/' + end_block, 1, -1);
             rvDescryption.AddNL(']', 0, -1);

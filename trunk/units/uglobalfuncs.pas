@@ -135,6 +135,7 @@ var
     GlobalRawAllowed : boolean; //глобальная установка не разрешающая освобожать фреймы при обрыве соединений
     Options, PacketsINI : TMemIniFile;
     GetFuncINI : TMemIniFile;
+    wlimit, looplimit : integer;
 
 implementation
 
