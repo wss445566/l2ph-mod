@@ -1436,7 +1436,12 @@ procedure TfPacketView.fLoop();
 var
     i, j, val : integer;
     end_block : string;
+    loopdefpos, loopdefsize, loopcount : integer;
+    loopstartposinini : integer;
 begin
+    loopdefpos := StrToInt(param1);
+    loopdefsize := StrToInt(param2);
+
       //распечатываем
     addToDescr(offset, typ, name_, value + hexvalue);
     tmp_param := param2;
@@ -1446,10 +1451,11 @@ begin
     begin
         exit;
     end;
-    if StrToInt(value) = 0 then
+    loopcount := StrToInt(value);
+    if loopcount = 0 then
     begin
         //пропускаем данные входящие в Loop
-        for i := 1 to StrToInt(param2) do
+        for i := 1 to loopdefsize do
         begin
             Param0 := GetType(StrIni, PosInIni);
             inc(PosInIni);
@@ -1458,10 +1464,10 @@ begin
     else
     begin
         //проверка, что param1 > 1
-        if strtoint(param1) > 1 then
+        if loopdefpos > 1 then
         begin
           //распечатываем значения
-            for i := 1 to StrToInt(param1) - 1 do
+            for i := 1 to loopdefpos - 1 do
             begin
                 fParse();
                 if Func = 'GET' then
@@ -1475,22 +1481,17 @@ begin
                 end;
             end;
         end;
-        ii := PosInIni;
-        if tmp_value = 'range error' then
-        begin
-            exit;
-        end;
+        loopstartposinini := PosInIni;
         //PrintFuncsParams('Pck'+PacketName);
-        if StrToInt(tmp_value) > 32767 then
+        if loopcount > 32767 then
         begin
-            val := (StrToInt(tmp_value) xor $FFFF) + 1;
+            val := (loopcount xor $FFFF) + 1;
         end
         else
         begin
-            val := StrToInt(tmp_value);
+            val := loopcount;
         end;
         end_block := inttostr(val);
-//        for i:=1 to StrToInt(tmp_value) do
         for i := 1 to val do
         begin
             if i > looplimit then
@@ -1501,8 +1502,8 @@ begin
             rvDescryption.AddNL('              ' + lang.GetTextOrDefault('startb' (* '[Начало повторяющегося блока ' *)), 0, 0);
             rvDescryption.AddNL(inttostr(i) + '/' + end_block, 1, -1);
             rvDescryption.AddNL(']', 0, -1);
-            PosInIni := ii;
-            for j := 1 to StrToInt(tmp_param) do
+            PosInIni := loopstartposinini;
+            for j := 1 to loopdefsize do
             begin
                 fParse();
             //здесь может быть SWITCH
