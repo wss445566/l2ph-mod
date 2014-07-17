@@ -2759,10 +2759,29 @@ begin
         rvDescryption.Clear;
         rvFuncs.Clear;
 
-        if PacketName = '' then
+        cid := ord(PktStr[12 + 0]);
+        if length(PktStr) - 11 >= 3 then
         begin
-            GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow, hexid);
+            wsubid := word(ord(PktStr[12 + 1]) + ord(PktStr[12 + 2]) shl 8);
+        end
+        else
+        begin
+            wsubid := 0;
         end;
+        if length(PktStr) - 11 >= 5 then
+        begin
+            wsub2id := word(ord(PktStr[12 + 3]) + ord(PktStr[12 + 4]) shl 8);
+        end
+        else
+        begin
+            wsub2id := 0;
+        end;
+
+
+//        if PacketName = ''  then
+//        begin
+        GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow, hexid);
+//        end;
     //считываем строку из packets.ini для парсинга
         if PktStr[1] = #04 then
         begin
@@ -2874,6 +2893,16 @@ begin
         begin
             Label1.Caption := lang.GetTextOrDefault('IDS_109' (* 'Выделенный пакет: тип - 0x' *)) + IntToHex(cID, 2) + ', ' + PacketName + lang.GetTextOrDefault('size' (* ', размер - ' *)) + IntToStr(wSize);
         end;
+
+        if PktStr[1] = #04 then
+        begin
+            StrIni := PacketsINI.ReadString('client', hexid, 'Unknown:');
+        end
+        else
+        begin
+            StrIni := PacketsINI.ReadString('server', hexid, 'Unknown:');
+        end;
+
     //начинаем разбирать пакет по заданному в packets.ini формату
     //смещение в ini
         PosInIni := Pos(':', StrIni);
