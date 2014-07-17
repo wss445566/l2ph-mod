@@ -14,7 +14,8 @@ uses
     inifiles,
     Controls,
     Messages,
-    uencdec;
+    uencdec,
+    ComCtrls;
 
 const
     WM_Dll_Log = $04F0;               //получаем сообщение из inject.dll
@@ -47,6 +48,8 @@ type
         tunel : Tobject;
     end;
 
+function PacketIdToHex(id, subid, sub2id, size : integer) : string;
+procedure GetPFandPL(var pf : TStringList; var pl : TListView; FromServer : boolean);
 function get_ws_length(s : string; index : integer) : integer;
 function text2hexstring(s : string) : string;
   //конвертации//
@@ -73,7 +76,7 @@ procedure GetProcessList(var sl : TStrings); //получаем список процессов использ
 
 procedure Reload;
 
-function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean) : boolean;
+function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean; var hexid : string) : boolean;
 function GetNamePacket(s : string) : string; // вырезаем название пакета из строки
 
 var
@@ -671,12 +674,89 @@ begin
     end;
 end;
 
-function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean) : boolean;
+procedure GetPFandPL(var pf : TStringList; var pl : TListView; FromServer : boolean);
+begin
+    if FromServer then
+    begin
+        pf := PacketsFromS;
+        pl := fPacketFilter.ListView1;
+    end
+    else
+    begin
+        pf := PacketsFromC;
+        pl := fPacketFilter.ListView2;
+    end;
+
+end;
+
+function PacketIdToHex(id, subid, sub2id, size : integer) : string;
+begin
+    result := '';
+    if size > 0 then
+    begin
+        result := result + inttohex(id, 2);
+    end;
+    if size > 1 then
+    begin
+        result := result + inttohex(subid and $ff, 2);
+    end;
+    if size > 2 then
+    begin
+        result := result + inttohex(subid shr 8, 2);
+    end;
+    if size > 3 then
+    begin
+        result := result + inttohex(sub2id and $ff, 2);
+    end;
+    if size > 4 then
+    begin
+        result := result + inttohex(sub2id shr 8, 2);
+    end;
+
+end;
+
+function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean; var hexid : string) : boolean;
 var
     i : integer;
+    pl : TListView;
+    pf : TStringList;
 begin
     result := false; //во всех unknown убрал эту строчку
     isshow := true;
+    GetPFandPL(pf, pl, FromServer);
+    hexid := PacketIdToHex(id, subid, sub2id, 1);
+    i := pf.IndexOfName(hexid);
+    if i = -1 then
+    begin
+        hexid := PacketIdToHex(id, subid, sub2id, 2);
+        i := pf.IndexOfName(hexid);
+    end;
+    if i = -1 then
+    begin
+        hexid := PacketIdToHex(id, subid, sub2id, 3);
+        i := pf.IndexOfName(hexid);
+    end;
+    if i = -1 then
+    begin
+        hexid := PacketIdToHex(id, subid, sub2id, 4);
+        i := pf.IndexOfName(hexid);
+    end;
+    if i = -1 then
+    begin
+        hexid := PacketIdToHex(id, subid, sub2id, 5);
+        i := pf.IndexOfName(hexid);
+    end;
+    if i = -1 then
+    begin
+        pname := 'Unknown' + PacketIdToHex(id, subid, sub2id, 1);
+    end
+    else
+    begin
+        pname := pl.Items.Item[i].SubItems[0];
+        isshow := pl.Items.Item[i].Checked;
+        result := true;
+    end;
+    exit;
   //------------------------------------------------------------------------
   //расшифровываем коды пакетов и вносим неизвестные в списки пакетов
     if FromServer then

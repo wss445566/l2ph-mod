@@ -2320,6 +2320,7 @@ procedure TfPacketView.InterpretatorJava(PacketName, Packet : string; size : wor
 var
     PacketJava : TJavaParser;
     FromServer, SkipID : boolean;
+    hexid : string;
 begin
   //считываем packets.ini
   //по opcode находим PacketName
@@ -2405,7 +2406,7 @@ begin
         rvDescryption.Clear;
         rvFuncs.Clear;
 
-        GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow);
+        GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow, hexid);
     //считываем описание пакета
         if (GlobalProtocolVersion = AION) then // дл€ јйон 2.1 - 2.6
         begin
@@ -2624,6 +2625,8 @@ end;
 //******************************************************************************
 //=======================================================================
 procedure TfPacketView.ParsePacket(PacketName, Packet : string; size : word = 0);
+var
+    hexid : string;
 begin
     FuncParamNames := TStringList.Create;
     FuncParamTypes := TStringList.Create;
@@ -2705,7 +2708,7 @@ begin
 
         if PacketName = '' then
         begin
-            GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow);
+            GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow, hexid);
         end;
     //считываем строку из packets.ini дл€ парсинга
         if PktStr[1] = #04 then

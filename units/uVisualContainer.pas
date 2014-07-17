@@ -335,7 +335,7 @@ procedure TfVisual.Processpacket;
   //=========================================
   // локальные процедуры
   //=========================================
-    procedure AddToListView5(ItemImageIndex : byte; ItemCaption : string; ItemPacketNumber : longword; ItemId : byte; ItemSubId, ItemSub2Id : word; Visible : boolean);
+    procedure AddToListView5(ItemImageIndex : byte; ItemCaption : string; ItemPacketNumber : longword; ItemId : byte; ItemSubId, ItemSub2Id : word; Visible : boolean; hexid : string);
     var
         str : string;
     begin
@@ -422,7 +422,7 @@ procedure TfVisual.Processpacket;
                     end;
                 end;
             end;
-            SubItems.Add(str);
+            SubItems.Add(hexid);
             if not Visible then
             begin
                 MakeVisible(false);
@@ -430,22 +430,13 @@ procedure TfVisual.Processpacket;
         end;
     end;
 
-    procedure AddToPacketFilterUnknown(ItemFromServer : boolean; ItemId : byte; ItemSubId, ItemSub2Id : word; ItemChecked : boolean);
+    procedure AddToPacketFilterUnknown(ItemFromServer : boolean; ItemId : byte; ItemSubId, ItemSub2Id : word; ItemChecked : boolean; hexid : string);
     var
         CurrentList : TListView;
         currentpackedfrom : TStringList;
         str : string;
     begin
-        if ItemFromServer then
-        begin
-            currentpackedfrom := PacketsFromS;
-            CurrentList := fPacketFilter.ListView1;
-        end
-        else
-        begin
-            currentpackedfrom := PacketsFromC;
-            CurrentList := fPacketFilter.ListView2;
-        end;
+        GetPFandPL(currentpackedfrom, CurrentList, ItemFromServer);
         with CurrentList.Items.Add do
         begin
             if ItemSubId = 0 then
@@ -456,6 +447,10 @@ procedure TfVisual.Processpacket;
             begin
                 str := IntToHex(ItemSubId, 4);
             end;
+//            str:=inttohex(itemid,2);
+//            if newpacket.size >=3 then begin str:=str+inttohex(itemsubid,2)+inttohex(itemsubid shr 8,2); end;
+//            if newpacket.size >=5 then begin str:=str+inttohex(itemsub2id,2)+inttohex(itemsub2id shr 8,2);end;
+            str := hexid;
             Caption := str;
             Checked := ItemChecked;
             SubItems.Add('Unknown' + str);
@@ -476,6 +471,7 @@ var
     pname : string;
     isknown : boolean;
     IsShow : boolean;
+    hexid : string;
 begin
   //а нужна ли она?!
     if GlobalSettings.isNoLog then
@@ -549,14 +545,32 @@ begin
             end;
         end;
     end;
-    isknown := GetPacketName(id, subid, sub2id, FromServer, pname, IsShow);
+    id := newpacket.Data[0];
+    if newpacket.size >= 3 then
+    begin
+        subid := word(newpacket.data[1] + newpacket.data[2] shl 8);
+    end
+    else
+    begin
+        subid := 0;
+    end;
+    if newpacket.size >= 5 then
+    begin
+        sub2id := word(newpacket.data[3] + newpacket.data[4] shl 8);
+    end
+    else
+    begin
+        sub2id := 0;
+    end;
+
+    isknown := GetPacketName(id, subid, sub2id, FromServer, pname, IsShow, hexid);
     if not isknown then
     begin
-        AddToPacketFilterUnknown(FromServer, id, subid, sub2id, true);
+        AddToPacketFilterUnknown(FromServer, id, subid, sub2id, true, hexid);
     end;
     if IsShow then
     begin
-        AddToListView5(math.ifthen(FromServer, 0, 1), Pname, PacketNumber, Id, subid, sub2id, not ToolButton5.Down);
+        AddToListView5(math.ifthen(FromServer, 0, 1), Pname, PacketNumber, Id, subid, sub2id, not ToolButton5.Down, hexid);
     end;
 end;
 
