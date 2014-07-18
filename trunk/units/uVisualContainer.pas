@@ -347,81 +347,6 @@ procedure TfVisual.Processpacket;
             ImageIndex := ItemImageIndex;
       //номер
             SubItems.Add(IntToStr(ItemPacketNumber));
-      //код пакета
-
-            if (GlobalProtocolVersion = AION) then // для Айон 2.1 - 2.6
-        //client/server one ID packets: c(ID)
-            begin
-                str := IntToHex(ItemId, 2);
-            end
-            else //для Lineage II
-            begin
-                if (GlobalProtocolVersion = AION27) then // для Айон 2.7
-          //client/server mybe two ID packets: c(ID)
-                begin
-                    if (ItemSubId = 0) then
-                    begin
-                        str := IntToHex(ItemId, 2);
-                    end
-                    else
-                    begin
-                        str := IntToHex(ItemSubId, 4);
-                    end;
-                end
-                else //для Lineage II
-                begin
-                    if (GlobalProtocolVersion < GRACIA) then
-                    begin
-            //фиксим пакет 39 для хроник C4-C5-Interlude
-            //client two ID packets: (subID)
-                        if (ItemId in [$39, $D0]) then
-                        begin
-                            str := IntToHex(ItemSubId, 4);
-                        end
-                        else
-                        begin
-                            str := IntToHex(ItemId, 2);
-                        end;
-                    end
-                    else
-                    begin
-            //client three ID packets: c(ID)h(subID)
-                        if (Itemid = $D0) and (((Itemsub2id >= $5100) and (Itemsub2id <= $5105)) or (Itemsub2id = $5A00)) then
-                        begin
-                            str := IntToHex(ItemId, 2) + IntToHex(ItemSub2Id, 4);
-                        end
-                        else
-                        begin
-              //client two ID packets: h(subID)
-                            if (Itemid = $D0) then
-                            begin
-                                str := IntToHex(ItemSubId, 4);
-                            end
-                            else
-                            begin
-                //server four ID packets: c(ID)h(subID)h(sub2ID)
-                                if (ItemSubId = $FE97) or (ItemSubId = $FE98) or (ItemSubId = $FEB7) then
-                                begin
-                                    str := IntToHex(ItemSubId, 4) + IntToHex(ItemSub2Id, 4);
-                                end
-                                else
-                                begin
-                                    if ItemSubId = 0 then
-                    //client/server one ID packets: c(ID)
-                                    begin
-                                        str := IntToHex(ItemId, 2);
-                                    end
-                                    else
-                                    begin
-                    //client/server two ID packets: c(ID)h(subID)
-                                        str := IntToHex(ItemSubId, 4);
-                                    end;
-                                end;
-                            end;
-                        end;
-                    end;
-                end;
-            end;
             SubItems.Add(hexid);
             if not Visible then
             begin
@@ -439,17 +364,6 @@ procedure TfVisual.Processpacket;
         GetPFandPL(currentpackedfrom, CurrentList, ItemFromServer);
         with CurrentList.Items.Add do
         begin
-            if ItemSubId = 0 then
-            begin
-                str := IntToHex(ItemId, 2);
-            end
-            else
-            begin
-                str := IntToHex(ItemSubId, 4);
-            end;
-//            str:=inttohex(itemid,2);
-//            if newpacket.size >=3 then begin str:=str+inttohex(itemsubid,2)+inttohex(itemsubid shr 8,2); end;
-//            if newpacket.size >=5 then begin str:=str+inttohex(itemsub2id,2)+inttohex(itemsub2id shr 8,2);end;
             str := hexid;
             Caption := str;
             Checked := ItemChecked;
@@ -496,55 +410,6 @@ begin
         exit;
     end;
 
-//  if (GlobalProtocolVersion=AION)then // для Айон 2.1 - 2.6
-//  begin
-//    //client/server one ID packets: c(ID)
-//    //это настоящий ID
-//    id := newpacket.Data[0];
-//    SubID:=0;    //пакет закончился, пишем в subid 0
-//    Sub2ID:=0;   //пакет закончился, пишем в sub2id 0
-//  end
-//  else
-    if (GlobalProtocolVersion <= AION27) then // для Айон 2.7 двухбайтное ID
-    begin
-    //client/server maybe two ID packets: c(ID)
-        id := newpacket.Data[0];
-        SubId := word(byte(newpacket.Data[1]) shl 8 + id);
-        Sub2ID := 0;   //пакет закончился, пишем в sub2id 0
-    end
-    else
-    begin
-        if newpacket.Size = 3 then
-        begin
-            id := newpacket.Data[0];
-            SubID := 0;    //пакет закончился, пишем в subid 0
-            Sub2ID := 0;   //пакет закончился, пишем в sub2id 0
-        end
-        else
-        begin
-            if not FromServer then //от клиента
-            begin //для двух и трехбайтных ID
-        //client three ID packets: c(ID)h(subID)
-        //готовим sub2id для трехбайтного пакета - содержит 2 и 3 байт
-        //надо разворачивать младшие байты числа в младшие позиции
-                id := newpacket.Data[1];
-                Sub2Id := word(id shl 8 + byte(newpacket.Data[2]));
-        //готовим subid для двухбайтного пакета - содержит 1 и 2 байт
-        //это настоящий ID
-                id := newpacket.Data[0];
-                SubId := word(id shl 8 + byte(newpacket.Data[1]));
-            end
-            else //от сервера
-            begin  //для двух и четырехбайтных ID
-        //готовим для sub2id
-                id := newpacket.Data[2];
-                Sub2Id := word(id shl 8 + byte(newpacket.Data[3]));
-        //это настоящий ID
-                id := newpacket.Data[0];
-                SubId := word(id shl 8 + byte(newpacket.Data[1]));
-            end;
-        end;
-    end;
     id := newpacket.Data[0];
     if newpacket.size >= 3 then
     begin

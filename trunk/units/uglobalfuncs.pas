@@ -363,13 +363,14 @@ begin
     if s = '' then
     begin
         Result := '';
+        exit;
     end
     else
     begin
         l := MultiByteToWideChar(codePage, MB_PRECOMPOSED, pchar(@s[1]), -1, nil, 0);
-        SetLength(Result, l - 1);
         if l > 1 then
         begin
+            SetLength(Result, l - 1);
             MultiByteToWideChar(CodePage, MB_PRECOMPOSED, pchar(@s[1]), -1, PWideChar(@Result[1]), l - 1);
         end;
     end;
@@ -580,14 +581,15 @@ begin
     if ws = '' then
     begin
         Result := '';
+        exit;
     end
     else
     begin
         codePage := 0;
         l := WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, nil, 0, nil, nil);
-        SetLength(Result, l - 1);
         if l > 1 then
         begin
+            SetLength(Result, l - 1);
             WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, @Result[1], l - 1, nil, nil);
         end;
     end;
@@ -686,7 +688,6 @@ begin
         pf := PacketsFromC;
         pl := fPacketFilter.ListView2;
     end;
-
 end;
 
 function PacketIdToHex(id, subid, sub2id, size : integer) : string;
@@ -712,7 +713,6 @@ begin
     begin
         result := result + inttohex(sub2id shr 8, 2);
     end;
-
 end;
 
 function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean; var hexid : string) : boolean;
@@ -755,249 +755,6 @@ begin
         pname := pl.Items.Item[i].SubItems[0];
         isshow := pl.Items.Item[i].Checked;
         result := true;
-    end;
-    exit;
-  //------------------------------------------------------------------------
-  //расшифровываем коды пакетов и вносим неизвестные в списки пакетов
-    if FromServer then
-    begin
-    //от сервера
-        if (GlobalProtocolVersion = AION) then // дл€ јйон 2.1 - 2.6
-        begin
-            i := PacketsFromS.IndexOfName(IntToHex(id, 2));
-            if i = -1 then
-            begin
-                pname := 'Unknown' + IntToHex(id, 2);
-            end
-            else
-            begin
-                pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                result := true;
-            end;
-        end
-        else
-        begin
-            if (GlobalProtocolVersion = AION27) then // дл€ јйон 2.7
-            begin
-        //ищем сначала двухбайтное ID
-                i := PacketsFromS.IndexOfName(IntToHex(subid, 4));
-                if i = -1 then
-                begin
-          //затем однобайтное ID
-                    i := PacketsFromS.IndexOfName(IntToHex(id, 2));
-                    subid := 0; //сообщаем, что однобайтное ID
-                    if i = -1 then
-                    begin
-            //все равно не нашли, значит Unknown
-                        pname := 'Unknown' + IntToHex(id, 2);
-                    end
-                    else
-                    begin
-                        pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                        isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                        result := true;
-                    end;
-                end
-                else
-                begin
-                    pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                    isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                    result := true;
-                end;
-            end
-            else
-            begin
-                if (GlobalProtocolVersion > AION27) then // дл€ LineageII
-                begin  //server four ID packets: c(ID)h(subID)h(sub2ID)
-                    if (subid = $FE97) or (subid = $FE98) or (subid = $FEB7) then
-                    begin
-            //находим индекс пакета
-                        i := PacketsFromS.IndexOfName(IntToHex(subid, 4) + IntToHex(sub2id, 4));
-                        if i = -1 then
-                        begin
-              //неизвестный пакет от сервера
-                            pname := 'Unknown' + IntToHex(subid, 4) + IntToHex(sub2id, 4);
-                        end
-                        else
-                        begin
-                            pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                            isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                            result := true;
-                        end;
-                    end
-                    else
-                    begin
-                        if id = $FE then //server two ID packets: c(ID)h(subID)
-                        begin
-              //находим индекс пакета
-                            i := PacketsFromS.IndexOfName(IntToHex(subid, 4));
-                            if i = -1 then
-                            begin
-                //неизвестный пакет от сервера
-                                pname := 'Unknown' + IntToHex(subid, 4);
-                            end
-                            else
-                            begin
-                                pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                                isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                                result := true;
-                            end;
-                        end
-                        else  //server one ID packets: c(ID)
-                        begin
-                            subid := 0;
-                            i := PacketsFromS.IndexOfName(IntToHex(id, 2));
-                            if i = -1 then
-                            begin
-                                pname := 'Unknown' + IntToHex(id, 2);
-                            end
-                            else
-                            begin
-                                pname := fPacketFilter.ListView1.Items.Item[i].SubItems[0];
-                                isshow := fPacketFilter.ListView1.Items.Item[i].Checked;
-                                result := true;
-                            end;
-                        end;
-                    end;
-                end;
-            end;
-        end;
-    end
-    else
-    begin
-    //от клиента
-        if (GlobalProtocolVersion = AION) then // дл€ јйон 2.1 - 2.6
-        begin
-            i := PacketsFromC.IndexOfName(IntToHex(id, 2));
-            if i = -1 then
-            begin
-                pname := 'Unknown' + IntToHex(id, 2);
-            end
-            else
-            begin
-                pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                result := true;
-            end;
-        end
-        else
-        begin
-            if (GlobalProtocolVersion = AION27) then // дл€ јйон 2.7
-            begin
-        //ищем сначала двухбайтное ID
-                i := PacketsFromC.IndexOfName(IntToHex(subid, 4));
-                if i = -1 then
-                begin
-          //затем однобайтное ID
-                    i := PacketsFromC.IndexOfName(IntToHex(id, 2));
-                    subid := 0; //сообщаем, что однобайтное ID
-                    if i = -1 then
-                    begin
-            //все равно не нашли, значит Unknown
-                        pname := 'Unknown' + IntToHex(id, 2);
-                    end
-                    else
-                    begin
-                        pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                        isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                        result := true;
-                    end;
-                end
-                else
-                begin
-                    pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                    isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                    result := true;
-                end;
-            end
-            else
-            begin
-                if (GlobalProtocolVersion < GRACIA) then
-                begin
-          //фиксим пакет 39 дл€ хроник C4-C5-Interlude
-                    if (id in [$39, $D0]) then
-                    begin
-                        i := PacketsFromC.IndexOfName(IntToHex(subid, 4));
-                        if i = -1 then
-                        begin
-                            pname := 'Unknown' + IntToHex(subid, 4);
-                        end
-                        else
-                        begin
-                            pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                            isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                            result := true;
-                        end;
-                    end
-                    else
-                    begin
-                        i := PacketsFromC.IndexOfName(IntToHex(id, 2));
-                        if i = -1 then
-                        begin
-                            pname := 'Unknown' + IntToHex(id, 2);
-                        end
-                        else
-                        begin
-                            pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                            isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                            result := true;
-                        end;
-                    end;
-                end
-                else    // Lineage II дл€ хроник от Gracia и выше
-                begin  //client three ID packets: c(ID)h(subID)
-                    if (id = $D0) and (((subid >= $5100) and (subid <= $5105)) or (subid = $5A00)) then
-                    begin
-            //находим индекс пакета
-                        i := PacketsFromC.IndexOfName(IntToHex(id, 2) + IntToHex(sub2id, 4));
-                        if i = -1 then
-                        begin
-              //неизвестный пакет от сервера
-                            pname := 'Unknown' + IntToHex(id, 2) + IntToHex(sub2id, 4);
-                        end
-                        else
-                        begin
-                            pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                            isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                            result := true;
-                        end;
-                    end
-                    else
-                    begin
-                        if (id = $D0) then
-                        begin
-                            i := PacketsFromC.IndexOfName(IntToHex(subid, 4));
-                            if i = -1 then
-                            begin
-                                pname := 'Unknown' + IntToHex(subid, 4);
-                            end
-                            else
-                            begin
-                                pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                                isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                                result := true;
-                            end;
-                        end
-                        else
-                        begin
-                            subid := 0;
-                            i := PacketsFromC.IndexOfName(IntToHex(id, 2));
-                            if i = -1 then
-                            begin
-                                pname := 'Unknown' + IntToHex(id, 2);
-                            end
-                            else
-                            begin
-                                pname := fPacketFilter.ListView2.Items.Item[i].SubItems[0];
-                                isshow := fPacketFilter.ListView2.Items.Item[i].Checked;
-                                result := true;
-                            end;
-                        end;
-                    end;
-                end;
-            end;
-        end;
     end;
 end;
 
