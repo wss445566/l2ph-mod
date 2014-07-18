@@ -51,6 +51,7 @@ type
 
     private
     { Private declarations }
+        procedure fParseAndProcess();
         procedure fParse;
         procedure fGet;
         procedure fSwitch;
@@ -1323,6 +1324,40 @@ end;
 //Последние элементы s(Name)s(message) попадают под выбор default, т.е. если chatType не соответствует ни одному case, то в расшифровку попадают элементы s(Name)s(message).
 //Не значащие нули везде можно опускать, т.е. вместо 0001 пишем 1.
 //=======================================================================
+
+procedure TfPacketView.fParseAndProcess();
+begin
+    fParse();
+    if Func = 'LOOPM' then
+    begin
+        fLoopM();
+    end
+    else
+    if Func = 'LOOP' then
+    begin
+        fLoop();
+    end
+    else
+    if Func = 'FOR' then
+    begin
+        fFor();
+    end
+    else
+    if Func = 'SWITCH' then
+    begin
+        fSwitch();
+    end
+    else
+    if Func = 'GET' then
+    begin
+        fGet();
+    end
+    else
+    begin
+        addToDescr(offset, typ, name_, value + hexvalue);
+    end;
+end;
+
 procedure TfPacketView.fSwitch();
 var
     i, j : integer;
@@ -1333,48 +1368,19 @@ begin
     addToDescr(offset, typ, name_, value + hexvalue);
     switchskipcount := strtoint(param1);
     switchdefcount := strtoint(param2);
-    switchvalue := strtoint(value);
     end_block := value;
     if value = 'range error' then
     begin
         exit;
     end;
+    switchvalue := strtoint(value);
       //проверка, что param1 > 0
     if switchskipcount > 0 then
     begin
         //распечатываем значения всех пропускаемых блоков
         for i := 1 to switchskipcount do
         begin
-            fParse();
-            if Func = 'LOOPM' then
-            begin
-                fLoopM();
-            end
-            else
-            if Func = 'LOOP' then
-            begin
-                fLoop();
-            end
-            else
-            if Func = 'FOR' then
-            begin
-                fFor();
-            end
-            else
-            if Func = 'SWITCH' then
-            begin
-                fSwitch();
-            end
-            else
-            if Func = 'GET' then
-            begin
-                fGet();
-            end //get(param1, id, value);
-          //распечатываем
-            else
-            begin
-                addToDescr(offset, typ, name_, value + hexvalue);
-            end;
+            fParseAndProcess();
         end;
     end;
     for i := 1 to switchdefcount do  //пробегаем по всем case
@@ -1388,36 +1394,7 @@ begin
               //распечатываем значения
                 for j := 1 to casedefcount do
                 begin
-                    fParse();
-                    if Func = 'LOOPM' then
-                    begin
-                        fLoopM();
-                    end
-                    else
-                    if Func = 'LOOP' then
-                    begin
-                        fLoop();
-                    end
-                    else
-                    if Func = 'FOR' then
-                    begin
-                        fFor();
-                    end
-                    else
-                    if Func = 'SWITCH' then
-                    begin
-                        fSwitch();
-                    end
-                    else
-                    if Func = 'GET' then
-                    begin
-                        fGet();
-                    end //get(param1, id, value);
-                //распечатываем
-                    else
-                    begin
-                        addToDescr(offset, typ, name_, value + hexvalue);
-                    end;
+                    fParseAndProcess();
                 end;
             end
             else
@@ -1438,38 +1415,7 @@ begin
               //распечатываем значения
                 for j := 1 to casedefcount do
                 begin
-
-                    fParse();
-                    if Func = 'LOOPM' then
-                    begin
-                        fLoopM();
-                    end
-                    else
-                    if Func = 'LOOP' then
-                    begin
-                        fLoop();
-                    end
-                    else
-                    if Func = 'FOR' then
-                    begin
-                        fFor();
-                    end
-                    else
-                    if Func = 'SWITCH' then
-                    begin
-                        fSwitch();
-                    end
-                    else
-                    if Func = 'GET' then
-                    begin
-                        fGet();
-                    end //get(param1, id, value);
-
-                    else
-                    begin
-                        addToDescr(offset, typ, name_, value + hexvalue);
-                    end;
-
+                    fParseAndProcess();
                 end;
             end
             else
@@ -1557,37 +1503,7 @@ begin
             PosInIni := loopstartposinini;
             for j := 1 to loopdefsize do
             begin
-                fParse();
-            //здесь может быть SWITCH
-                if Func = 'LOOPM' then
-                begin
-                    fLoopM();
-                end
-                else
-                if Func = 'LOOP' then
-                begin
-                    fLoop();
-                end
-                else
-                if Func = 'FOR' then
-                begin
-                    fFor();
-                end
-                else
-                if Func = 'SWITCH' then
-                begin
-                    fSwitch();
-                end
-                else
-                if Func = 'GET' then
-                begin
-                    fGet();
-                end //get(param1, id, value);
-            //распечатываем
-                else
-                begin
-                    addToDescr(offset, typ, name_, value + hexvalue);
-                end;
+                fParseAndProcess();
             end;
           //if value = 'range error' then break;
             rvDescryption.AddNL('              ' + lang.GetTextOrDefault('endb' (* '[Конец повторяющегося блока ' *)), 0, 0);
@@ -1663,36 +1579,7 @@ begin
             PosInIni := ii;
             for j := 1 to StrToInt(tmp_param) do
             begin
-                fParse();
-                if Func = 'LOOPM' then
-                begin
-                    fLoopM();
-                end
-                else
-                if Func = 'LOOP' then
-                begin
-                    fLoop();
-                end
-                else
-                if Func = 'FOR' then
-                begin
-                    fFor();
-                end
-                else
-                if Func = 'SWITCH' then
-                begin
-                    fSwitch();
-                end
-                else
-                if Func = 'GET' then
-                begin
-                    fGet();
-                end //get(param1, id, value);
-            //распечатываем
-                else
-                begin
-                    addToDescr(offset, typ, name_, value + hexvalue);
-                end;
+                fParseAndProcess();
             end;
           //if value = 'range error' then break;
             rvDescryption.AddNL('              ' + lang.GetTextOrDefault('endb' (* '[Конец повторяющегося блока ' *)), 0, 0);
@@ -1741,32 +1628,7 @@ begin
             PosInIni := ii;
             for j := 1 to StrToInt(tmp_param) do
             begin
-                fParse();
-            //здесь может быть SWITCH
-                if Func = 'LOOP' then
-                begin
-                    fLoop();
-                end
-                else
-                if Func = 'FOR' then
-                begin
-                    fFor();
-                end
-                else
-                if Func = 'SWITCH' then
-                begin
-                    fSwitch();
-                end
-                else
-                if Func = 'GET' then
-                begin
-                    fGet();
-                end //get(param1, id, value);
-            //распечатываем
-                else
-                begin
-                    addToDescr(offset, typ, name_, value + hexvalue);
-                end;
+                fParseAndProcess();
             end;
             rvDescryption.AddNL('              ' + lang.GetTextOrDefault('endb' (* '[Конец повторяющегося блока ' *)), 0, 0);
             rvDescryption.AddNL(inttostr(i) + '/' + tmp_value, 1, -1);
@@ -2704,54 +2566,6 @@ begin
         end;
     //делаем видимой во внешних функциях
         wSize := size;
-        if (GlobalProtocolVersion = AION) then // для Айон 2.1 - 2.6
-        begin
-            cID := byte(PktStr[12]); //фактическое начало пакета, ID
-            wSubID := 0;   //не требуется
-            wSub2ID := 0;   //не требуется
-        end
-        else
-        if (GlobalProtocolVersion = AION27) then // для Айон 2.7 двухбайтные ID
-        begin
-            cID := byte(PktStr[12]);                    //в cID - ID пакета при однобайтном ID
-            wSubID := word(byte(PktStr[13]) shl 8 + cID); //в wSubId - ID пакета при двухбайтном ID
-            wSub2ID := 0;   //не требуется
-        end
-        else //для Lineage II
-        begin
-            if wSize = 3 then
-            begin
-                cID := byte(PktStr[12]); //фактическое начало пакета, ID
-                wSubID := 0;    //пакет закончился, пишем в subid 0
-                wSub2ID := 0;   //не требуется
-            end
-            else
-            begin
-                if PktStr[1] = #04 then
-                begin      //client  04,
-                    cID := byte(PktStr[13]); //учитываем трех байтное ID в wSub2ID
-                    wSub2ID := word(cID shl 8 + byte(PktStr[14]));
-                    cID := byte(PktStr[12]); //фактическое начало пакета, ID
-                    wSubID := word(cID shl 8 + byte(PktStr[13])); //учитываем двух байтное ID в wSubID
-                end
-                else  //сервер  03, учитываем двух и четырех байтное ID
-                begin
-                    cID := byte(PktStr[12]); //фактическое начало пакета, ID
-                    if wSize = 3 then
-                    begin
-                        wSubID := 0;    //пакет закончился, пишем в subid 0
-                        wSub2ID := 0;    //пакет закончился, пишем в subid 0
-                    end
-                    else
-                    begin
-                        cID := byte(PktStr[14]); //фактическое начало SUB2ID
-                        wSub2ID := word(cID shl 8 + byte(PktStr[15])); //считываем Sub2Id
-                        cID := byte(PktStr[12]);                   //фактическое начало пакета, ID
-                        wSubID := word(cID shl 8 + byte(PktStr[13])); //считываем SubId
-                    end;
-                end;
-            end;
-        end;
 
         currentpacket := StringToHex(copy(PktStr, 12, length(PktStr) - 11), ' ');
 
@@ -2777,122 +2591,7 @@ begin
             wsub2id := 0;
         end;
 
-
-//        if PacketName = ''  then
-//        begin
         GetPacketName(cID, wSubID, wSub2ID, (PktStr[1] = #03), PacketName, isshow, hexid);
-//        end;
-    //считываем строку из packets.ini для парсинга
-        if PktStr[1] = #04 then
-        begin
-      //client  04
-            if (GlobalProtocolVersion = AION) then // для Айон 2.1 - 2.6
-            begin
-                StrIni := PacketsINI.ReadString('client', IntToHex(cID, 2), 'Unknown:');
-            end
-            else
-            begin
-                if (GlobalProtocolVersion = AION27) then // для Айон 2.7 двухбайтные ID
-                begin
-          //0081=cm_time_check:c(static)h(id2)d(nanoTime)
-          //32=cm_group_response:h(id2)d(unk1)c(unk2)
-                    StrIni := PacketsINI.ReadString('client', IntToHex(wSubId, 4), 'Unknown:');
-          //если не нашли двухбайтное ID, значит у нас ID однобайтное
-                    if (StrIni = 'Unknown:') then
-                    begin
-                        StrIni := PacketsINI.ReadString('client', IntToHex(cID, 2), 'Unknown:');   //если и такого не нашли, то имя пакета - Unknown:
-                        wSubId := 0;   //сигнал, что однобайтное ID
-                    end;
-                end
-                else
-                begin
-                    if (GlobalProtocolVersion < GRACIA) then
-                    begin
-            //фиксим пакет 39 для хроник C4-C5-Interlude
-                        if (cID in [$39, $D0]) and (wSize > 3) then
-              //C4, C5, T0
-                        begin
-                            StrIni := PacketsINI.ReadString('client', IntToHex(wSubID, 4), 'Unknown:h(subID)');
-                        end
-                        else
-                        begin
-                            StrIni := PacketsINI.ReadString('client', IntToHex(cID, 2), 'Unknown:');
-                        end;
-                    end
-                    else
-                    begin
-            //для хроник Kamael - Hellbound - Gracia - Freya
-           //client three ID packets: c(ID)h(sub2ID)
-                        if (cID = $D0) and (((wsub2id >= $5100) and (wsub2id <= $5105)) or (wsub2id = $5A00)) and (wSize > 3) then
-                        begin
-                            StrIni := PacketsINI.ReadString('server', IntToHex(cID, 2) + IntToHex(wSub2ID, 4), 'Unknown:c(ID)h(subID)');
-                        end
-                        else
-                        begin
-                            if (cID = $D0) and (wSize > 3) then
-                            begin
-                                StrIni := PacketsINI.ReadString('client', IntToHex(wSubID, 4), 'Unknown:h(subID)');
-                            end
-                            else
-                            begin
-                                StrIni := PacketsINI.ReadString('client', IntToHex(cID, 2), 'Unknown:');
-                            end;
-                        end;
-                    end;
-                end;
-            end;
-        end
-        else
-        begin
-      //server  03
-            if (GlobalProtocolVersion = AION) then // для Айон 2.1 - 2.6
-            begin
-                StrIni := PacketsINI.ReadString('server', IntToHex(cID, 2), 'Unknown:');
-            end
-            else
-            begin
-                if (GlobalProtocolVersion = AION27) then // для Айон 2.7 двухбайтные ID
-                begin
-          //0081=cm_time_check:c(static)h(id2)d(nanoTime)
-          //32=cm_group_response:h(id2)d(unk1)c(unk2)
-                    StrIni := PacketsINI.ReadString('server', IntToHex(wSubId, 4), 'Unknown:');
-          //если не нашли двухбайтное ID, значит у нас ID однобайтное
-                    if (StrIni = 'Unknown:') then
-                    begin
-                        StrIni := PacketsINI.ReadString('server', IntToHex(cID, 2), 'Unknown:');   //если и такого не нашли, то имя пакета - Unknown:
-                        wSubId := 0;   //сигнал, что однобайтное ID
-                    end;
-                end
-                else
-                begin
-          //server four ID packets: c(ID)h(subID)h(sub2ID)
-                    if ((wsubid = $FE97) or (wsubid = $FE98) or (wsubid = $FEB7)) and (wSize > 3) then
-                    begin
-                        StrIni := PacketsINI.ReadString('server', IntToHex(wSubID, 4) + IntToHex(wSub2ID, 4), 'Unknown:h(subID)h(sub2ID)');
-                    end
-                    else
-                    begin
-                        if (cID = $FE) and (wSize > 3) then
-                        begin
-                            StrIni := PacketsINI.ReadString('server', IntToHex(wSubID, 4), 'Unknown:h(subID)');
-                        end
-                        else
-                        begin
-                            StrIni := PacketsINI.ReadString('server', IntToHex(cID, 2), 'Unknown:');
-                        end;
-                    end;
-                end;
-            end;
-        end;
-
-        if ((GlobalProtocolVersion = AION27) and (wSubId <> 0)) then // для Айон 2.7 двухбайтные ID
-        begin
-            Label1.Caption := lang.GetTextOrDefault('IDS_109' (* 'Выделенный пакет: тип - 0x' *)) + IntToHex(wSubId, 4) + ', ' + PacketName + lang.GetTextOrDefault('size' (* ', размер - ' *)) + IntToStr(wSize);
-        end
-        else
-        begin
-            Label1.Caption := lang.GetTextOrDefault('IDS_109' (* 'Выделенный пакет: тип - 0x' *)) + IntToHex(cID, 2) + ', ' + PacketName + lang.GetTextOrDefault('size' (* ', размер - ' *)) + IntToStr(wSize);
-        end;
 
         if PktStr[1] = #04 then
         begin
@@ -2955,51 +2654,7 @@ begin
             blockmask := '';
             while (PosInIni > 1) and (PosInIni < Length(StrIni)) and (PosInPkt < wSize + 10) do
             begin
-                fParse();
-                if Func = 'GET' then
-                begin
-                    fGet();
-                end
-                else
-        //для С4, С5 и Т0-Интерлюдия
-                if Func = 'FOR' then
-                begin
-                    fFor();
-                end
-                else
-        //для Т1 - Камаель-Хелбаунд-Грация
-        (*в функции LOOP первый параметр может быть больше 1,
-        значит его просто выводим, а остальное
-        в цикле до параметр 2*)
-                if (Func = 'LOOP') {and (StrToInt(value)>0)} then
-                begin
-                    fLoop();
-                end
-                else
-                if (Func = 'LOOPM') {and (StrToInt(value)>0)} then
-                begin
-                    fLoopM();
-                end
-                else
-        //========================================================================
-        //для Грации, Фрейи и AION
-        (*в функции SWITCH первый параметр может быть больше 0,
-        значит описания просто выводим, а остальное
-        в цикле до параметр 2*)
-        //d(id:switch.skip.count)
-        // _(id:case.param1.param2)
-        //d(number)
-        // _(id:case.param1.param2)
-        //d(number)
-                if Func = 'SWITCH' then
-                begin
-                    fSwitch();
-                end
-                else
-          //распечатываем
-                begin
-                    addToDescr(offset, typ, name_, value + hexvalue);
-                end;
+                fParseAndProcess();
             end;
         except
       //ошибка при распознании пакета
