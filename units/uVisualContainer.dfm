@@ -1,8 +1,8 @@
 object fVisual: TfVisual
   Left = 0
   Top = 0
-  Width = 451
-  Height = 304
+  Width = 707
+  Height = 560
   Align = alClient
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,54 +13,67 @@ object fVisual: TfVisual
   TabOrder = 0
   TabStop = True
   OnResize = FrameResize
+  ExplicitWidth = 451
+  ExplicitHeight = 304
   object Splitter3: TSplitter
-    Left = 98
+    Left = 354
     Top = 5
-    Height = 299
+    Height = 555
     Align = alRight
     Visible = False
+    ExplicitLeft = 98
+    ExplicitHeight = 299
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 5
-    Width = 98
-    Height = 299
+    Width = 354
+    Height = 555
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 98
+    ExplicitHeight = 299
     object TabSheet1: TTabSheet
       Caption = #1055#1088#1086#1089#1084#1086#1090#1088
       OnShow = TabSheet1Show
+      ExplicitWidth = 90
+      ExplicitHeight = 271
       object GroupBox12: TGroupBox
         Left = 0
         Top = 51
-        Width = 90
-        Height = 220
+        Width = 346
+        Height = 476
         Align = alClient
         Caption = #1051#1086#1075' '#1087#1072#1082#1077#1090#1086#1074':'
         TabOrder = 0
+        ExplicitWidth = 90
+        ExplicitHeight = 220
         object ListView5: TListView
           Left = 2
           Top = 15
-          Width = 86
-          Height = 203
+          Width = 342
+          Height = 459
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
           Columns = <
             item
-              AutoSize = True
-              Caption = 'Name'
-              WidthType = (
-                -8)
+              Caption = 'No'
+              Width = 45
             end
             item
-              Caption = #8470
-              Width = 45
+              Alignment = taRightJustify
+              Caption = 'size'
+              Width = 40
             end
             item
               Caption = 'Id'
-              Width = 45
+              Width = 60
+            end
+            item
+              AutoSize = True
+              Caption = 'Name'
             end>
           ColumnClick = False
           Font.Charset = DEFAULT_CHARSET
@@ -82,21 +95,23 @@ object fVisual: TfVisual
           TabOrder = 0
           ViewStyle = vsReport
           OnClick = ListView5Click
+          OnCustomDrawItem = ListView5CustomDrawItem
           OnKeyUp = ListView5KeyUp
         end
       end
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 90
+        Width = 346
         Height = 29
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
+        ExplicitWidth = 90
         object Panel4: TPanel
           Left = 0
           Top = 0
-          Width = 420
+          Width = 251
           Height = 29
           Align = alClient
           AutoSize = True
@@ -104,14 +119,16 @@ object fVisual: TfVisual
           Ctl3D = True
           ParentCtl3D = False
           TabOrder = 0
+          ExplicitWidth = 420
           object ToolBar1: TToolBar
             Left = 0
             Top = 0
-            Width = 420
+            Width = 251
             Height = 29
             Align = alClient
             Images = imgBT
             TabOrder = 0
+            ExplicitWidth = 420
             object ReloadThis: TToolButton
               Left = 0
               Top = 0
@@ -179,15 +196,16 @@ object fVisual: TfVisual
               OnClick = tbtnDeleteClick
             end
             object ToolButton15: TToolButton
-              Left = 152
+              Left = 0
               Top = 0
               Width = 11
               ImageIndex = 16
+              Wrap = True
               Style = tbsSeparator
             end
             object tbtnToSend: TToolButton
-              Left = 163
-              Top = 0
+              Left = 0
+              Top = 33
               Hint = #1044#1086#1073#1072#1074#1080#1090#1100' '#1087#1072#1082#1077#1090' '#1074' '#1055#1086#1089#1099#1083#1082#1091
               Enabled = False
               ImageIndex = 4
@@ -196,16 +214,16 @@ object fVisual: TfVisual
               OnClick = tbtnToSendClick
             end
             object ToolButton2: TToolButton
-              Left = 186
-              Top = 0
+              Left = 23
+              Top = 33
               Width = 10
               Caption = 'ToolButton2'
               ImageIndex = 11
               Style = tbsSeparator
             end
             object ToolButton4: TToolButton
-              Left = 196
-              Top = 0
+              Left = 33
+              Top = 33
               Hint = #1055#1072#1082#1077#1090#1099' '#1086#1090' '#1089#1077#1088#1074#1077#1088#1072
               Down = True
               ImageIndex = 5
@@ -215,8 +233,8 @@ object fVisual: TfVisual
               OnClick = ToolButton4Click
             end
             object ToolButton3: TToolButton
-              Left = 219
-              Top = 0
+              Left = 56
+              Top = 33
               Hint = #1055#1072#1082#1077#1090#1099' '#1086#1090' '#1082#1083#1080#1077#1085#1090#1072
               Down = True
               ImageIndex = 6
@@ -226,8 +244,8 @@ object fVisual: TfVisual
               OnClick = ToolButton4Click
             end
             object ToolButton5: TToolButton
-              Left = 242
-              Top = 0
+              Left = 79
+              Top = 33
               Hint = #1057#1083#1077#1076#1080#1090#1100' '#1079#1072' '#1087#1086#1089#1083#1077#1076#1085#1080#1084' '#1087#1088#1080#1096#1077#1076#1096#1080#1084' '#1087#1072#1082#1077#1090#1086#1084
               Down = True
               ImageIndex = 7
@@ -236,8 +254,8 @@ object fVisual: TfVisual
               Style = tbsCheck
             end
             object BtnAutoSavePckts: TToolButton
-              Left = 265
-              Top = 0
+              Left = 102
+              Top = 33
               Hint = #1057#1086#1093#1088#1072#1085#1103#1090#1100' '#1083#1086#1075' '#1087#1077#1088#1077#1076' '#1072#1074#1090#1086' '#1086#1095#1080#1089#1090#1082#1086#1081
               AllowAllUp = True
               ImageIndex = 8
@@ -246,15 +264,15 @@ object fVisual: TfVisual
               Style = tbsCheck
             end
             object ToolButton9: TToolButton
-              Left = 288
-              Top = 0
+              Left = 125
+              Top = 33
               Width = 14
               ImageIndex = 12
               Style = tbsSeparator
             end
             object ToolButton6: TToolButton
-              Left = 302
-              Top = 0
+              Left = 139
+              Top = 33
               Hint = #1055#1086#1082#1072#1079#1072#1090#1100'/'#1089#1087#1088#1103#1090#1072#1090#1100' '#1092#1080#1083#1100#1090#1088#1099
               ImageIndex = 9
               ParentShowHint = False
@@ -263,8 +281,8 @@ object fVisual: TfVisual
               OnClick = ToolButton6Click
             end
             object ToolButton17: TToolButton
-              Left = 325
-              Top = 0
+              Left = 162
+              Top = 33
               Hint = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1089#1084#1077#1097#1077#1085#1080#1077' '#1074' Hex/Dec'
               ImageIndex = 10
               ParentShowHint = False
@@ -275,13 +293,14 @@ object fVisual: TfVisual
           end
         end
         object Panel7: TPanel
-          Left = -5
+          Left = 251
           Top = 0
           Width = 95
           Height = 29
           Align = alRight
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitLeft = -5
           object ToolBar3: TToolBar
             Left = 0
             Top = 0
@@ -338,11 +357,12 @@ object fVisual: TfVisual
       object Panel1: TPanel
         Left = 0
         Top = 29
-        Width = 90
+        Width = 346
         Height = 22
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 2
+        ExplicitWidth = 90
         object btnRegRuleUpdate: TSpeedButton
           Left = 399
           Top = 0
@@ -375,14 +395,12 @@ object fVisual: TfVisual
       Caption = #1055#1086#1089#1099#1083#1082#1072
       ImageIndex = 1
       OnShow = TabSheet1Show
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 90
+      ExplicitHeight = 271
       object Panel8: TPanel
         Left = 0
         Top = 0
-        Width = 90
+        Width = 346
         Height = 28
         Align = alTop
         BevelOuter = bvNone
@@ -390,7 +408,7 @@ object fVisual: TfVisual
         object Panel9: TPanel
           Left = 0
           Top = 0
-          Width = 44
+          Width = 300
           Height = 28
           Align = alClient
           AutoSize = True
@@ -399,7 +417,7 @@ object fVisual: TfVisual
           object ToolBar2: TToolBar
             Left = 0
             Top = 0
-            Width = 44
+            Width = 300
             Height = 28
             Align = alClient
             Images = imgBT
@@ -555,7 +573,7 @@ object fVisual: TfVisual
           end
         end
         object Panel11: TPanel
-          Left = 44
+          Left = 300
           Top = 0
           Width = 46
           Height = 28
@@ -598,16 +616,18 @@ object fVisual: TfVisual
       object GroupBox7: TGroupBox
         Left = 0
         Top = 28
-        Width = 90
-        Height = 243
+        Width = 346
+        Height = 499
         Align = alClient
         Caption = #1055#1072#1082#1077#1090#1099' '#1085#1072' '#1086#1090#1087#1088#1072#1074#1082#1091':'
         TabOrder = 1
+        ExplicitWidth = 90
+        ExplicitHeight = 243
         object Memo4: TJvRichEdit
           Left = 2
           Top = 15
-          Width = 86
-          Height = 226
+          Width = 342
+          Height = 482
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -624,6 +644,8 @@ object fVisual: TfVisual
           OnChange = Memo4Change
           OnKeyUp = Memo4KeyUp
           OnMouseUp = Memo4MouseUp
+          ExplicitWidth = 86
+          ExplicitHeight = 226
         end
       end
     end
@@ -723,19 +745,22 @@ object fVisual: TfVisual
   object Panel14: TPanel
     Left = 0
     Top = 0
-    Width = 451
+    Width = 707
     Height = 5
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 451
   end
   object packetVievPanel: TPanel
-    Left = 101
+    Left = 357
     Top = 5
     Width = 350
-    Height = 299
+    Height = 555
     Align = alRight
     TabOrder = 3
+    ExplicitLeft = 101
+    ExplicitHeight = 299
   end
   object waitbar: TPanel
     Left = 160
@@ -2176,16 +2201,17 @@ object fVisual: TfVisual
       6C6520282A2E736372697074297C2A2E7363726970747C416C6C2066696C6573
       20282A2E2A297C2A2E2A010D0A73744C6F63616C65730D0A7374436F6C6C6563
       74696F6E730D0A4C69737456696577352E436F6C756D6E735B305D2E43617074
-      696F6E014E616D65014E616D65010D0A4C69737456696577352E436F6C756D6E
-      735B315D2E43617074696F6E01B901B9010D0A4C69737456696577352E436F6C
-      756D6E735B325D2E43617074696F6E014964014964010D0A7374436861725365
-      74730D0A546656697375616C0144454641554C545F4348415253455401444546
-      41554C545F43484152534554010D0A4C69737456696577350144454641554C54
-      5F434841525345540144454641554C545F43484152534554010D0A4D656D6F34
-      0144454641554C545F434841525345540144454641554C545F43484152534554
-      010D0A53706C6173680144454641554C545F434841525345540144454641554C
-      545F43484152534554010D0A4C6162656C31015255535349414E5F4348415253
-      45540144454641554C545F43484152534554010D0A}
+      696F6E014E6F01010D0A4C69737456696577352E436F6C756D6E735B315D2E43
+      617074696F6E0173697A6501010D0A4C69737456696577352E436F6C756D6E73
+      5B325D2E43617074696F6E01496401010D0A4C69737456696577352E436F6C75
+      6D6E735B335D2E43617074696F6E014E616D6501010D0A737443686172536574
+      730D0A546656697375616C0144454641554C545F434841525345540144454641
+      554C545F43484152534554010D0A4C69737456696577350144454641554C545F
+      434841525345540144454641554C545F43484152534554010D0A4D656D6F3401
+      44454641554C545F434841525345540144454641554C545F4348415253455401
+      0D0A53706C6173680144454641554C545F434841525345540144454641554C54
+      5F43484152534554010D0A4C6162656C31015255535349414E5F434841525345
+      540144454641554C545F43484152534554010D0A}
   end
   object PerlRegEx: TPerlRegEx
     Options = [preCaseLess]
