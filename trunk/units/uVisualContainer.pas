@@ -170,6 +170,7 @@ type
         procedure JvSpinEdit1Change(Sender : TObject);
         procedure btnRegRuleUpdateClick(Sender : TObject);
         procedure chkRegRuleClick(Sender : TObject);
+        procedure ListView5CustomDrawItem(Sender : TCustomListView; Item : TListItem; State : TCustomDrawState; var DefaultDraw : boolean);
     private
     { Private declarations }
         hScriptThread, idScriptThread : cardinal;
@@ -335,19 +336,21 @@ procedure TfVisual.Processpacket;
   //=========================================
   // локальные процедуры
   //=========================================
-    procedure AddToListView5(ItemImageIndex : byte; ItemCaption : string; ItemPacketNumber : longword; ItemId : byte; ItemSubId, ItemSub2Id : word; Visible : boolean; hexid : string);
+    procedure AddToListView5(ItemImageIndex : byte; ItemCaption : string; ItemPacketNumber : longword; ItemId : byte; ItemSubId, ItemSub2Id : word; Visible : boolean; hexid : string; pksize : integer);
     var
         str : string;
     begin
         with ListView5.Items.Add do
         begin
       //имя пакета
-            Caption := ItemCaption;
+            Caption := IntToStr(ItemPacketNumber);
       //код иконки
             ImageIndex := ItemImageIndex;
       //номер
-            SubItems.Add(IntToStr(ItemPacketNumber));
+            SubItems.Add(inttostr(pksize));
             SubItems.Add(hexid);
+//            SubItemImages[SubItems.Add(ItemCaption)] := ItemImageIndex;
+            SubItems.Add(ItemCaption);
             if not Visible then
             begin
                 MakeVisible(false);
@@ -435,7 +438,7 @@ begin
     end;
     if IsShow then
     begin
-        AddToListView5(math.ifthen(FromServer, 0, 1), Pname, PacketNumber, Id, subid, sub2id, not ToolButton5.Down, hexid);
+        AddToListView5(math.ifthen(FromServer, 0, 1), Pname, PacketNumber, Id, subid, sub2id, not ToolButton5.Down, hexid, newpacket.size - 2);
     end;
 end;
 
@@ -456,6 +459,18 @@ begin
         begin
             PacketView.ParsePacket(ListView5.Selected.Caption, Dump.Strings[sid]);
         end;
+    end;
+end;
+
+procedure TfVisual.ListView5CustomDrawItem(Sender : TCustomListView; Item : TListItem; State : TCustomDrawState; var DefaultDraw : boolean);
+begin
+    if item.ImageIndex = 0 then
+    begin
+        listview5.Canvas.Brush.Color := $ffeeee;
+    end
+    else
+    begin
+        listview5.Canvas.Brush.Color := $eeeeff;
     end;
 end;
 
