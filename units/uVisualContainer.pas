@@ -449,15 +449,15 @@ begin
     if ListView5.SelCount = 1 then
     begin
         EnableBtns;
-        sid := StrToIntDef(ListView5.Selected.SubItems.strings[0], 0);
+        sid := StrToIntDef(ListView5.Selected.Caption, 0);
         if GlobalSettings.isChangeParser then
         //java
         begin
-            PacketView.InterpretatorJava(ListView5.Selected.Caption, Dump.Strings[sid]);
+            PacketView.InterpretatorJava(ListView5.Selected.SubItems.strings[1], Dump.Strings[sid]);
         end
         else
         begin
-            PacketView.ParsePacket(ListView5.Selected.Caption, Dump.Strings[sid]);
+            PacketView.ParsePacket(ListView5.Selected.SubItems.strings[1], Dump.Strings[sid]);
         end;
     end;
 end;
