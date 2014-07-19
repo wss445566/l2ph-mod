@@ -1,8 +1,8 @@
 object fVisual: TfVisual
   Left = 0
   Top = 0
-  Width = 707
-  Height = 560
+  Width = 451
+  Height = 304
   Align = alClient
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,47 +13,37 @@ object fVisual: TfVisual
   TabOrder = 0
   TabStop = True
   OnResize = FrameResize
-  ExplicitWidth = 451
-  ExplicitHeight = 304
   object Splitter3: TSplitter
-    Left = 354
+    Left = 98
     Top = 5
-    Height = 555
+    Height = 299
     Align = alRight
     Visible = False
-    ExplicitLeft = 98
-    ExplicitHeight = 299
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 5
-    Width = 354
-    Height = 555
+    Width = 98
+    Height = 299
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 98
-    ExplicitHeight = 299
     object TabSheet1: TTabSheet
       Caption = #1055#1088#1086#1089#1084#1086#1090#1088
       OnShow = TabSheet1Show
-      ExplicitWidth = 90
-      ExplicitHeight = 271
       object GroupBox12: TGroupBox
         Left = 0
         Top = 51
-        Width = 346
-        Height = 476
+        Width = 90
+        Height = 220
         Align = alClient
         Caption = #1051#1086#1075' '#1087#1072#1082#1077#1090#1086#1074':'
         TabOrder = 0
-        ExplicitWidth = 90
-        ExplicitHeight = 220
         object ListView5: TListView
           Left = 2
           Top = 15
-          Width = 342
-          Height = 459
+          Width = 86
+          Height = 203
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
@@ -74,6 +64,8 @@ object fVisual: TfVisual
             item
               AutoSize = True
               Caption = 'Name'
+              WidthType = (
+                -63)
             end>
           ColumnClick = False
           Font.Charset = DEFAULT_CHARSET
@@ -102,12 +94,11 @@ object fVisual: TfVisual
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 346
+        Width = 90
         Height = 29
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 90
         object Panel4: TPanel
           Left = 0
           Top = 0
@@ -119,7 +110,6 @@ object fVisual: TfVisual
           Ctl3D = True
           ParentCtl3D = False
           TabOrder = 0
-          ExplicitWidth = 420
           object ToolBar1: TToolBar
             Left = 0
             Top = 0
@@ -128,7 +118,6 @@ object fVisual: TfVisual
             Align = alClient
             Images = imgBT
             TabOrder = 0
-            ExplicitWidth = 420
             object ReloadThis: TToolButton
               Left = 0
               Top = 0
@@ -293,14 +282,13 @@ object fVisual: TfVisual
           end
         end
         object Panel7: TPanel
-          Left = 251
+          Left = -5
           Top = 0
           Width = 95
           Height = 29
           Align = alRight
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = -5
           object ToolBar3: TToolBar
             Left = 0
             Top = 0
@@ -357,12 +345,11 @@ object fVisual: TfVisual
       object Panel1: TPanel
         Left = 0
         Top = 29
-        Width = 346
+        Width = 90
         Height = 22
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitWidth = 90
         object btnRegRuleUpdate: TSpeedButton
           Left = 399
           Top = 0
@@ -395,33 +382,36 @@ object fVisual: TfVisual
       Caption = #1055#1086#1089#1099#1083#1082#1072
       ImageIndex = 1
       OnShow = TabSheet1Show
-      ExplicitWidth = 90
-      ExplicitHeight = 271
+      ExplicitLeft = 0
+      ExplicitTop = 0
       object Panel8: TPanel
         Left = 0
         Top = 0
-        Width = 346
+        Width = 90
         Height = 28
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 346
         object Panel9: TPanel
           Left = 0
           Top = 0
-          Width = 300
+          Width = 44
           Height = 28
           Align = alClient
           AutoSize = True
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitWidth = 300
           object ToolBar2: TToolBar
             Left = 0
             Top = 0
-            Width = 300
+            Width = 44
             Height = 28
             Align = alClient
             Images = imgBT
             TabOrder = 0
+            ExplicitWidth = 300
             object SaveBnt: TToolButton
               Left = 0
               Top = 0
@@ -573,13 +563,14 @@ object fVisual: TfVisual
           end
         end
         object Panel11: TPanel
-          Left = 300
+          Left = 44
           Top = 0
           Width = 46
           Height = 28
           Align = alRight
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitLeft = 300
           object ToolBar5: TToolBar
             Left = 0
             Top = 0
@@ -616,13 +607,11 @@ object fVisual: TfVisual
       object GroupBox7: TGroupBox
         Left = 0
         Top = 28
-        Width = 346
-        Height = 499
+        Width = 90
+        Height = 243
         Align = alClient
         Caption = #1055#1072#1082#1077#1090#1099' '#1085#1072' '#1086#1090#1087#1088#1072#1074#1082#1091':'
         TabOrder = 1
-        ExplicitWidth = 90
-        ExplicitHeight = 243
         object Memo4: TJvRichEdit
           Left = 2
           Top = 15
@@ -644,8 +633,6 @@ object fVisual: TfVisual
           OnChange = Memo4Change
           OnKeyUp = Memo4KeyUp
           OnMouseUp = Memo4MouseUp
-          ExplicitWidth = 86
-          ExplicitHeight = 226
         end
       end
     end
@@ -745,22 +732,19 @@ object fVisual: TfVisual
   object Panel14: TPanel
     Left = 0
     Top = 0
-    Width = 707
+    Width = 451
     Height = 5
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 451
   end
   object packetVievPanel: TPanel
-    Left = 357
+    Left = 101
     Top = 5
     Width = 350
-    Height = 555
+    Height = 299
     Align = alRight
     TabOrder = 3
-    ExplicitLeft = 101
-    ExplicitHeight = 299
   end
   object waitbar: TPanel
     Left = 160
