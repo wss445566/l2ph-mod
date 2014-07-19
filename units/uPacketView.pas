@@ -2684,12 +2684,12 @@ end;
 //==============================================================================
 procedure TfPacketView.rvHEXMouseMove(Sender : TObject; Shift : TShiftState; X, Y : integer);
 begin
-    rvHEX.SetFocusSilent;
+//    rvHEX.SetFocusSilent;
 end;
 
 procedure TfPacketView.rvDescryptionMouseMove(Sender : TObject; Shift : TShiftState; X, Y : integer);
 begin
-    rvDescryption.SetFocusSilent;
+//    rvDescryption.SetFocusSilent;
 end;
 
 procedure TfPacketView.rvDescryptionRVMouseUp(Sender : TCustomRichView; Button : TMouseButton; Shift : TShiftState; ItemNo, X, Y : integer);
@@ -2769,7 +2769,7 @@ begin
         rvHEX.CopyDef;
         rvHEX.Deselect;
         rvHEX.Invalidate;
-        rvHEX.SetFocus;
+//        rvHEX.SetFocus;
     end;
 end;
 
@@ -2780,7 +2780,7 @@ begin
         rvDescryption.CopyDef;
         rvDescryption.Deselect;
         rvDescryption.Invalidate;
-        rvDescryption.SetFocus;
+//        rvDescryption.SetFocus;
     end;
 end;
 

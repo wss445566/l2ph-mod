@@ -175,6 +175,7 @@ type
         procedure btnRegRuleUpdateClick(Sender : TObject);
         procedure chkRegRuleClick(Sender : TObject);
         procedure ListView5CustomDrawItem(Sender : TCustomListView; Item : TListItem; State : TCustomDrawState; var DefaultDraw : boolean);
+        procedure Memo4MouseEnter(Sender : TObject);
     private
     { Private declarations }
         hScriptThread, idScriptThread : cardinal;
@@ -813,8 +814,21 @@ procedure TfVisual.IDontknowHowToNameThis;
 var
     PktStr : string;
     size : integer;
+    i : integer;
 begin
-    PktStr := Memo4.Lines[Memo4.CaretPos.Y];
+    if eachlinepacket.down then
+    begin
+        PktStr := Memo4.Lines[Memo4.CaretPos.Y];
+    end
+    else
+    begin
+        for I := 0 to Memo4.Lines.Count - 1 do
+        begin
+            PktStr := PktStr + Memo4.Lines[I];
+        end;
+    end;
+
+
     if PktStr = '' then
     begin
         exit;
@@ -846,6 +860,11 @@ end;
 procedure TfVisual.Memo4KeyUp(Sender : TObject; var Key : word; Shift : TShiftState);
 begin
     IDontknowHowToNameThis;
+end;
+
+procedure TfVisual.Memo4MouseEnter(Sender : TObject);
+begin
+    Memo4.SetFocus;
 end;
 
 procedure TfVisual.Memo4MouseUp(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X, Y : integer);
