@@ -31,6 +31,22 @@
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">3</VersionInfo><VersionInfo Name="MinorVer">5</VersionInfo><VersionInfo Name="Release">34</VersionInfo><VersionInfo Name="Build">176</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1049</VersionInfo><VersionInfo Name="CodePage">1251</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">CoderX.ru</VersionInfoKeys><VersionInfoKeys Name="FileDescription">L2PacketHack (далее PH, L2PH, ПХ) это программа предназначенная для контроля трафика игры Lineage и её модификаций</VersionInfoKeys><VersionInfoKeys Name="FileVersion">3.5.34.176</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName">L2PacketHack</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">3.5.34.176</VersionInfoKeys><VersionInfoKeys Name="Comments">Назначение PH вовсе не связано со взломом серверов, это побочное явление которым пользуются люди желающие получить от программы гораздо больше, и при наличии соответствующего опыта и знания перечня недоработок серверов - получающие эту возможность</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">l2ph.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="$(BDS)\bin\bcboffice2k100.bpl">CodeGear C++Builder Office 2000 Servers Package</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\bcbofficexp100.bpl">CodeGear C++Builder Office XP Servers Package</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -57,8 +73,8 @@
       <Form>fConvert</Form>
     </DCCReference>
     <DCCReference Include="units\uData.pas">
-      <DesignClass>TDataModule</DesignClass>
       <Form>dmData</Form>
+      <DesignClass>TDataModule</DesignClass>
     </DCCReference>
     <DCCReference Include="units\uencdec.pas" />
     <DCCReference Include="units\uFilterForm.pas">
@@ -79,8 +95,8 @@
       <Form>fMainReplacer</Form>
     </DCCReference>
     <DCCReference Include="units\uPacketView.pas">
-      <DesignClass>TFrame</DesignClass>
       <Form>fPacketView</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="units\uPacketViewer.pas">
       <Form>fPacketViewer</Form>
@@ -97,8 +113,8 @@
     </DCCReference>
     <DCCReference Include="units\uResourceStrings.pas" />
     <DCCReference Include="units\uScriptEditor.pas">
-      <DesignClass>TFrame</DesignClass>
       <Form>fScriptEditor</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
     <DCCReference Include="units\uScripts.pas">
       <Form>fScript</Form>
@@ -112,8 +128,8 @@
       <Form>UserForm</Form>
     </DCCReference>
     <DCCReference Include="units\uVisualContainer.pas">
-      <DesignClass>TFrame</DesignClass>
       <Form>fVisual</Form>
+      <DesignClass>TFrame</DesignClass>
     </DCCReference>
   </ItemGroup>
 </Project>

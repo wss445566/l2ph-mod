@@ -134,6 +134,10 @@ type
         btnRegRuleUpdate : TSpeedButton;
         chkRegRule : TCheckBox;
         ToolButton2 : TToolButton;
+        function getItemNo(item : TListItem) : integer;
+        function getItemSize(item : TListItem) : integer;
+        function getItemPkID(item : TListItem) : string;
+        function getItemDesc(item : TListItem) : string;
         procedure ListView5Click(Sender : TObject);
         procedure ListView5KeyUp(Sender : TObject; var Key : word; Shift : TShiftState);
         procedure tbtnToSendClick(Sender : TObject);
@@ -349,7 +353,6 @@ procedure TfVisual.Processpacket;
       //номер
             SubItems.Add(inttostr(pksize));
             SubItems.Add(hexid);
-//            SubItemImages[SubItems.Add(ItemCaption)] := ItemImageIndex;
             SubItems.Add(ItemCaption);
             if not Visible then
             begin
@@ -449,15 +452,15 @@ begin
     if ListView5.SelCount = 1 then
     begin
         EnableBtns;
-        sid := StrToIntDef(ListView5.Selected.Caption, 0);
+        sid := getItemNo(ListView5.Selected);
         if GlobalSettings.isChangeParser then
         //java
         begin
-            PacketView.InterpretatorJava(ListView5.Selected.SubItems.strings[1], Dump.Strings[sid]);
+            PacketView.InterpretatorJava(getItemDesc(ListView5.Selected), Dump.Strings[sid]);
         end
         else
         begin
-            PacketView.ParsePacket(ListView5.Selected.SubItems.strings[1], Dump.Strings[sid]);
+            PacketView.ParsePacket(getItemDesc(ListView5.Selected), Dump.Strings[sid]);
         end;
     end;
 end;
@@ -622,78 +625,23 @@ var
     tmpItm : TListItem;
     from, id : byte;
     subid : word;
+    pf : TStringList;
+    pl : TListView;
 begin
     DisableBtns;
     tmpItm := ListView5.Selected;
     for i := 0 to ListView5.SelCount - 1 do
     begin
-        PktStr := HexToString(Dump.Strings[StrToInt(tmpItm.SubItems.Strings[0])]);
+        PktStr := HexToString(Dump.Strings[getItemNo(tmpItm)]);
         if Length(PktStr) < 12 then
         begin
             Exit;
         end;
-        from := byte(PktStr[1]);   //клиент=4, сервер=3
-        id := byte(PktStr[12]);   //фактическое начало пакета, ID
-        SubId := word(id shl 8 + byte(PktStr[13])); //считываем SubId
-        if from = 4 then
+        GetPFandPL(pf, pl, PktStr[1] = #03);
+        indx := pf.IndexOfName(getItemPkId(tmpItm));
+        if indx > -1 then
         begin
-      //от клиента
-            if ((GlobalProtocolVersion < CHRONICLE4)) then // дл€ јйон
-            begin
-                indx := PacketsFromC.IndexOfName(IntToHex(id, 2));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView2.Items.Item[indx].Checked := false;
-                end;
-            end
-            else
-            if (id in [$39, $D0]) then
-            begin
-          //находим индекс пакета
-                indx := PacketsFromC.IndexOfName(IntToHex(subid, 4));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView2.Items.Item[indx].Checked := false;
-                end;
-            end
-            else
-            begin
-                indx := PacketsFromC.IndexOfName(IntToHex(id, 2));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView2.Items.Item[indx].Checked := false;
-                end;
-            end;
-        end
-        else
-        begin
-      //от сервера
-            if ((GlobalProtocolVersion < CHRONICLE4)) then // дл€ јйон
-            begin
-                indx := PacketsFromS.IndexOfName(IntToHex(id, 2));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView1.Items.Item[indx].Checked := false;
-                end;
-            end
-            else
-            if id = $FE then
-            begin
-          //находим индекс пакета
-                indx := PacketsFromS.IndexOfName(IntToHex(subid, 4));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView1.Items.Item[indx].Checked := false;
-                end;
-            end
-            else
-            begin
-                indx := PacketsFromS.IndexOfName(IntToHex(id, 2));
-                if indx > -1 then
-                begin
-                    fPacketFilter.ListView1.Items.Item[indx].Checked := false;
-                end;
-            end;
+            pl.Items.Item[indx].Checked := false;
         end;
         tmpItm := ListView5.GetNextItem(tmpItm, sdAll, [isSelected]);
     end;
@@ -765,6 +713,26 @@ begin
     N2.Enabled := true;
 end;
 
+function TfVisual.getItemNo(item : TListItem) : integer;
+begin
+    result := strtointdef(item.Caption, 0);
+end;
+
+function TfVisual.getItemSize(item : TListItem) : integer;
+begin
+    result := strtointdef(item.SubItems.Strings[0], 0);
+end;
+
+function TfVisual.getItemPkID(item : TListItem) : string;
+begin
+    result := item.SubItems.Strings[1];
+end;
+
+function TfVisual.getItemDesc(item : TListItem) : string;
+begin
+    result := item.SubItems.Strings[2];
+end;
+
 procedure TfVisual.tbtnDeleteClick(Sender : TObject);
 var
     i, k : integer;
@@ -773,7 +741,7 @@ begin
     tmpItm := ListView5.Selected;
     for i := 1 to ListView5.SelCount do
     begin
-        k := StrToInt(tmpItm.SubItems.Strings[0]) - i + 1;
+        k := getItemNo(tmpItm) - i + 1;
         Dump.Delete(k);
         tmpItm := ListView5.GetNextItem(tmpItm, sdAll, [isSelected]);
     end;
