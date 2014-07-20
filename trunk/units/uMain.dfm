@@ -76,6 +76,7 @@ object fMain: TfMain
       end
       object nOpenPlog: TMenuItem
         Caption = #1054#1090#1082#1088#1099#1090#1100' '#1083#1086#1075' '#1087#1072#1082#1077#1090#1086#1074
+        ShortCut = 16463
         OnClick = nOpenPlogClick
       end
       object nOpenRawLog: TMenuItem
@@ -88,6 +89,7 @@ object fMain: TfMain
       end
       object nReloadPacketsIni: TMenuItem
         Caption = #1054#1073#1085#1086#1074#1080#1090#1100' '#1080#1085#1092#1086#1088#1084#1072#1094#1080#1102' '#1080#1079' *.ini'
+        ShortCut = 16466
         OnClick = nReloadPacketsIniClick
       end
       object nSettings: TMenuItem

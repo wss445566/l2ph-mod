@@ -2601,7 +2601,7 @@ begin
         begin
             StrIni := PacketsINI.ReadString('server', hexid, 'Unknown:');
         end;
-
+        Label1.Caption := lang.GetTextOrDefault('IDS_109' (* '¬ыделенный пакет: тип - 0x' *)) + copy(hexid, 1, 2) + ', ' + PacketName + lang.GetTextOrDefault('size' (* ', размер - ' *)) + IntToStr(wSize);
     //начинаем разбирать пакет по заданному в packets.ini формату
     //смещение в ini
         PosInIni := Pos(':', StrIni);
