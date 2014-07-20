@@ -19,6 +19,7 @@ del /q rev.tmp
 echo %rev% | findstr ":"
 if %errorlevel%==0 (
   echo update svn first
+  pause
   exit /b 3
 )
 
