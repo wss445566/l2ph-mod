@@ -530,7 +530,7 @@ begin
                     Offset := 1;
                     while not ((Packet.Data[Offset] = 0) and (Packet.Data[Offset + 1] = 0)) do
                     begin
-                        Inc(Offset);
+                        Inc(Offset, 2);
                     end;
                     SetLength(WStr, round((Offset + 0.5) / 2));
                     Move(Packet.Data[1], WStr[1], Offset);
