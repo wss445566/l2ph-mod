@@ -587,7 +587,7 @@ begin
                     delete(charname, i, 1);
                 end;
             end;
-
+            charname := fMain.pcClientsConnection.ActivePage.Caption;
             SaveThis.SaveToFile(pchar(ExtractFilePath(ParamStr(0))) + 'logs\' + charname + '[' + AddDateTime + '].pLog');
             SaveThis.Free;
         end;
