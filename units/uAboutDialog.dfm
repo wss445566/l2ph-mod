@@ -409,6 +409,8 @@ object fAbout: TfAbout
     ParentFont = False
     WordWrap = True
     OnClick = Label3Click
+    ExplicitLeft = 194
+    ExplicitWidth = 135
   end
   object AboutMemo: TMemo
     Left = 100
@@ -449,6 +451,7 @@ object fAbout: TfAbout
     UseInheritedData = True
     AutoSkipEmpties = True
     NumOfLanguages = 2
+    LangDispatcher = fMain.lang
     LangDelim = 1
     DoNotTranslate.Strings = (
       'Action2'
