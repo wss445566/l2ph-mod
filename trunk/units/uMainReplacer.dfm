@@ -1735,11 +1735,12 @@ object fMainReplacer: TfMainReplacer
       'TIB_STRINGLIST'
       'TSTRINGLIST')
     NumOfLanguages = 2
+    LangDispatcher = fMain.lang
     LangDelim = 1
     LangNames.Strings = (
-      'Language N1'
-      'Language N2')
-    Language = 'Language N1'
+      'Rus'
+      'Eng')
+    Language = 'Rus'
     ExcludedProperties.Strings = (
       'Category'
       'SecondaryShortCuts'
