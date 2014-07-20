@@ -64,7 +64,7 @@ object fVisual: TfVisual
               AutoSize = True
               Caption = 'Name'
               WidthType = (
-                -68)
+                -73)
             end>
           ColumnClick = False
           Font.Charset = DEFAULT_CHARSET
