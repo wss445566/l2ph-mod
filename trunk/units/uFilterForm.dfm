@@ -20,17 +20,18 @@ object fPacketFilter: TfPacketFilter
     Left = 0
     Top = 0
     Width = 326
-    Height = 407
+    Height = 358
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 407
     object TabSheet1: TTabSheet
       Caption = #1054#1090' '#1089#1077#1088#1074#1077#1088#1072
       object ListView1: TJvListView
         Left = 0
         Top = 0
         Width = 318
-        Height = 379
+        Height = 330
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -63,7 +64,7 @@ object fPacketFilter: TfPacketFilter
         Left = 0
         Top = 0
         Width = 318
-        Height = 379
+        Height = 330
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -92,15 +93,30 @@ object fPacketFilter: TfPacketFilter
   end
   object Panel17: TPanel
     Left = 0
-    Top = 407
+    Top = 358
     Width = 326
-    Height = 51
+    Height = 100
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 360
+    object Label1: TLabel
+      Left = 8
+      Top = 11
+      Width = 60
+      Height = 13
+      Caption = 'Search by Id'
+    end
+    object Label2: TLabel
+      Left = 168
+      Top = 11
+      Width = 28
+      Height = 13
+      Caption = 'Name'
+    end
     object Button1: TButton
       Left = 8
-      Top = 27
+      Top = 30
       Width = 150
       Height = 19
       Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1074#1089#1105
@@ -108,8 +124,8 @@ object fPacketFilter: TfPacketFilter
       OnClick = Button1Click
     end
     object Button13: TButton
-      Left = 160
-      Top = 27
+      Left = 164
+      Top = 30
       Width = 150
       Height = 19
       Caption = #1048#1085#1074#1077#1088#1090#1080#1088#1086#1074#1072#1090#1100
@@ -117,13 +133,38 @@ object fPacketFilter: TfPacketFilter
       OnClick = Button13Click
     end
     object UpdateBtn: TButton
-      Left = 8
-      Top = 5
-      Width = 302
+      Left = 164
+      Top = 55
+      Width = 150
       Height = 19
       Caption = #1055#1088#1080#1084#1077#1085#1080#1090#1100
       TabOrder = 2
       OnClick = UpdateBtnClick
+    end
+    object ButtonCleanAll: TButton
+      Left = 8
+      Top = 55
+      Width = 150
+      Height = 18
+      Caption = 'Clean All'
+      TabOrder = 3
+      OnClick = ButtonCleanAllClick
+    end
+    object EditSearchById: TEdit
+      Left = 74
+      Top = 6
+      Width = 84
+      Height = 21
+      TabOrder = 4
+      OnChange = EditSearchByIdChange
+    end
+    object EditSearchByName: TEdit
+      Left = 202
+      Top = 6
+      Width = 112
+      Height = 21
+      TabOrder = 5
+      OnChange = EditSearchByNameChange
     end
   end
   object lang: TsiLang

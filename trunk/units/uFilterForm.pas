@@ -3,6 +3,7 @@ unit uFilterForm;
 interface
 
 uses
+    PerlRegEx,
     inifiles,
     Windows,
     Messages,
@@ -32,11 +33,19 @@ type
         lang : TsiLang;
         ListView1 : TJvListView;
         ListView2 : TJvListView;
+        ButtonCleanAll : TButton;
+        EditSearchById : TEdit;
+        Label1 : TLabel;
+        Label2 : TLabel;
+        EditSearchByName : TEdit;
         procedure Button1Click(Sender : TObject);
         procedure Button13Click(Sender : TObject);
         procedure FormCreate(Sender : TObject);
         procedure FormDestroy(Sender : TObject);
         procedure UpdateBtnClick(Sender : TObject);
+        procedure ButtonCleanAllClick(Sender : TObject);
+        procedure EditSearchByIdChange(Sender : TObject);
+        procedure EditSearchByNameChange(Sender : TObject);
     protected
         procedure CreateParams(var Params : TCreateParams); override;
     public
@@ -75,6 +84,28 @@ begin
         for i := 0 to ListView2.Items.Count - 1 do
         begin
             ListView2.Items.Item[i].Checked := true;
+        end;
+    end;
+end;
+
+procedure TfPacketFilter.ButtonCleanAllClick(Sender : TObject);
+var
+    i : integer;
+    li : TListItems;
+begin
+    if PageControl2.ActivePageIndex = 0 then
+    begin
+        li := ListView1.Items;
+    end
+    else
+    begin
+        li := ListView2.Items;
+    end;
+    with li do
+    begin
+        for I := 0 to Count - 1 do
+        begin
+            item[i].Checked := false;
         end;
     end;
 end;
@@ -358,6 +389,64 @@ begin
     with Params do
     begin
         ExStyle := ExStyle or WS_EX_APPWINDOW or WS_EX_CONTROLPARENT;
+    end;
+end;
+
+procedure TfPacketFilter.EditSearchByIdChange(Sender : TObject);
+var
+    item : TListItem;
+    lv : TJvListView;
+begin
+    if PageControl2.ActivePageIndex = 0 then
+    begin
+        lv := ListView1;
+    end
+    else
+    begin
+        lv := ListView2;
+    end;
+    item := lv.FindCaption(0, editsearchbyid.Text, true, true, true);
+    if item <> nil then
+    begin
+        item.MakeVisible(false);
+    end;
+end;
+
+procedure TfPacketFilter.EditSearchByNameChange(Sender : TObject);
+var
+    i : integer;
+    lv : TJvListView;
+    PerlRegEx : TPerlRegEx;
+begin
+    if PageControl2.ActivePageIndex = 0 then
+    begin
+        lv := ListView1;
+    end
+    else
+    begin
+        lv := ListView2;
+    end;
+
+    if length(editsearchbyname.Text) > 0 then
+    begin
+        PerlRegEx := TPerlRegEx.Create(nil);
+        try
+            with PerlRegEx do
+            begin
+                RegEx := editsearchbyname.Text;
+                for I := 0 to lv.Items.Count - 1 do
+                begin
+                    Subject := lv.items[i].SubItems[0];
+                    if match then
+                    begin
+                        lv.items[i].MakeVisible(false);
+                        exit;
+                    end;
+                end;
+            end;
+        except
+        end;
+        PerlRegEx.Free;
     end;
 end;
 
