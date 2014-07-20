@@ -430,6 +430,7 @@ begin
     if length(editsearchbyname.Text) > 0 then
     begin
         PerlRegEx := TPerlRegEx.Create(nil);
+        PerlRegEx.Options := [preCaseLess];
         try
             with PerlRegEx do
             begin
