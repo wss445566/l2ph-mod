@@ -1,24 +1,26 @@
 @echo off
 setlocal
-
-pushd c:\l2ph-mod
+set tpath=c:\l2ph-mod
+pushd %tpath%
 if %errorlevel%==1 (
-  echo path not found
+  echo %tpath% path not found
   pause
   exit /b 1
 )
+
 if not exist build\l2ph.exe (
-  echo l2.exe not found
+  echo build\l2ph.exe not found
   pause
   exit /b 2
 )
+
 >rev.tmp svnversion
 <rev.tmp set /p rev=
 del /q rev.tmp
 
 echo %rev% | findstr ":"
 if %errorlevel%==0 (
-  echo update svn first
+  echo project update to head revision first
   pause
   exit /b 3
 )
