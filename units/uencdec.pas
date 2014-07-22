@@ -215,6 +215,7 @@ end;
 procedure TencDec.Corrector(var data; const enc, FromServer : boolean);
 var
     buff : array[1..400] of char absolute data;
+    i:integer;
 
     procedure _pseudo_srand(seed : integer);
     begin
@@ -232,6 +233,16 @@ var
             result := (_seed shr $10) and $7FFF;
         end;
     end;
+
+    procedure swap(var a,b:byte);
+    var
+    tmp:byte;
+    begin
+      tmp := a;
+      a := b;
+      b := tmp;
+    end;
+
 
     procedure _init_tables(seed : integer; _2_byte_size : integer);
     var
@@ -312,6 +323,11 @@ var
                 x := _1_byte_table[$75];
                 _1_byte_table[$75] := #$74;
                 _1_byte_table[cur_pos] := x;
+            end else begin
+              swap(pbyte(@_1_byte_table[$11+1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
+              swap(pbyte(@_1_byte_table[$12+1])^, pbyte(@_1_byte_table[pos(#$12, _1_byte_table)])^);
+              swap(pbyte(@_1_byte_table[$B1+1])^, pbyte(@_1_byte_table[pos(#$B1, _1_byte_table)])^);
+              swap(pbyte(@_1_byte_table[$D0+1])^, pbyte(@_1_byte_table[pos(#$D0, _1_byte_table)])^);
             end;
 
             _id_mix := true;
@@ -374,9 +390,11 @@ begin
                 end //‘рей€, HighFive
                 else
                 if GlobalProtocolVersion = GOD then
-                begin
+                begin //GoD
                     _init_tables(PInteger(@buff[$16])^, $C5);
-                end; //GoD
+                end else begin
+                    _init_tables(PInteger(@buff[$16])^, $FF);
+                end;
             end;
         end
         else
