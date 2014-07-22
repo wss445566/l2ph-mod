@@ -470,11 +470,11 @@ procedure TfVisual.ListView5CustomDrawItem(Sender : TCustomListView; Item : TLis
 begin
     if item.ImageIndex = 0 then
     begin
-        listview5.Canvas.Brush.Color := $ffeeee;
+//        listview5.Canvas.Brush.Color := $ffeeee;
     end
     else
     begin
-        listview5.Canvas.Brush.Color := $eeeeff;
+        listview5.Canvas.Brush.Color := $aaaaff;
     end;
 end;
 
