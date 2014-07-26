@@ -164,6 +164,7 @@ object fSettings: TfSettings
           ShowHint = True
           State = cbChecked
           TabOrder = 3
+          Visible = False
           OnClick = ChkGraciaOffClick
         end
         object isNewXor: TLabeledEdit
@@ -326,10 +327,6 @@ object fSettings: TfSettings
     object TabSheet9: TTabSheet
       Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1077#1088#1077#1093#1074#1072#1090#1072
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Bevel1: TBevel
         Left = 5
         Top = 90
