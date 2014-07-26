@@ -177,7 +177,8 @@ begin
                     Packet.Size := temp + 2;
                 end;
         //корректор для грации
-                if (Settings.isGraciaOff and (not Settings.isNoDecrypt)) then
+//                if (Settings.isGraciaOff and (not Settings.isNoDecrypt)) then
+                if (not Settings.isNoDecrypt) then
                 begin
                     Corrector(Packet.Size);
                 end;
@@ -215,7 +216,6 @@ end;
 procedure TencDec.Corrector(var data; const enc, FromServer : boolean);
 var
     buff : array[1..400] of char absolute data;
-    i:integer;
 
     procedure _pseudo_srand(seed : integer);
     begin
@@ -234,13 +234,13 @@ var
         end;
     end;
 
-    procedure swap(var a,b:byte);
+    procedure swap(var a, b : byte);
     var
-    tmp:byte;
+        tmp : byte;
     begin
-      tmp := a;
-      a := b;
-      b := tmp;
+        tmp := a;
+        a := b;
+        b := tmp;
     end;
 
 
@@ -323,14 +323,22 @@ var
                 x := _1_byte_table[$75];
                 _1_byte_table[$75] := #$74;
                 _1_byte_table[cur_pos] := x;
-            end else begin
-              swap(pbyte(@_1_byte_table[$11+1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
-              swap(pbyte(@_1_byte_table[$12+1])^, pbyte(@_1_byte_table[pos(#$12, _1_byte_table)])^);
-              swap(pbyte(@_1_byte_table[$B1+1])^, pbyte(@_1_byte_table[pos(#$B1, _1_byte_table)])^);
-              swap(pbyte(@_1_byte_table[$D0+1])^, pbyte(@_1_byte_table[pos(#$D0, _1_byte_table)])^);
+            end
+            else
+            begin
+                swap(pbyte(@_1_byte_table[$11 + 1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
+                swap(pbyte(@_1_byte_table[$12 + 1])^, pbyte(@_1_byte_table[pos(#$12, _1_byte_table)])^);
+                swap(pbyte(@_1_byte_table[$B1 + 1])^, pbyte(@_1_byte_table[pos(#$B1, _1_byte_table)])^);
+                swap(pbyte(@_1_byte_table[$D0 + 1])^, pbyte(@_1_byte_table[pos(#$D0, _1_byte_table)])^);
             end;
-
-            _id_mix := true;
+            if seed = 0 then
+            begin
+                _id_mix := false;
+            end
+            else
+            begin
+                _id_mix := true;
+            end;
         end;
     end;
 
@@ -392,7 +400,9 @@ begin
                 if GlobalProtocolVersion = GOD then
                 begin //GoD
                     _init_tables(PInteger(@buff[$16])^, $C5);
-                end else begin
+                end
+                else
+                begin
                     _init_tables(PInteger(@buff[$16])^, $FF);
                 end;
             end;
@@ -467,7 +477,8 @@ begin
     end;
     if (NeedEncrypt) then
     begin
-        if (isToServer and Settings.isGraciaOff) then
+//        if (isToServer and Settings.isGraciaOff) then
+        if isToServer then
         begin
             Corrector(Packet.Size, true);
         end;
@@ -553,10 +564,10 @@ begin
                     SetLength(WStr, round((Offset + 0.5) / 2));
                     Move(Packet.Data[1], WStr[1], Offset);
                     CharName := WideStringToString(WStr, 1251);
-                    if (Settings.isGraciaOff) then
-                    begin
-                        Corrector(Packet.Size, false, true);
-                    end; // инициализация корректора
+//                    if (Settings.isGraciaOff) then
+//                    begin
+                    Corrector(Packet.Size, false, true);
+//                    end; // инициализация корректора
           //Получено имя соединения
                     sendAction(TencDec_Action_GotName);
                 end;
@@ -587,10 +598,10 @@ begin
                     isInterlude := true;
                     xorC.InitKey(Packet.Data[2], byte(isInterlude));
                     xorS.InitKey(Packet.Data[2], byte(isInterlude));
-                    if Settings.isGraciaOff then
-                    begin
-                        Corrector(Packet.Size, false, true);
-                    end; // инициализация корректора
+//                    if Settings.isGraciaOff then
+//                    begin
+                    Corrector(Packet.Size, false, true);
+//                    end; // инициализация корректора
                     SetInitXORAfterEncode := true;
                     exit;
                 end;
