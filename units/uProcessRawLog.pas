@@ -3,96 +3,96 @@ unit uProcessRawLog;
 interface
 
 uses
-    usharedstructs,
-    uVisualContainer,
-    Windows,
-    Messages,
-    SysUtils,
-    Variants,
-    Classes,
-    Graphics,
-    Controls,
-    Forms,
-    Dialogs,
-    ImgList,
-    ComCtrls,
-    ToolWin,
-    StdCtrls,
-    JvExStdCtrls,
-    JvRichEdit,
-    ExtCtrls,
-    siComp;
+  usharedstructs,
+  uVisualContainer,
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  ImgList,
+  ComCtrls,
+  ToolWin,
+  StdCtrls,
+  JvExStdCtrls,
+  JvRichEdit,
+  ExtCtrls,
+  siComp;
 
 type
-    TfProcessRawLog = class (TForm)
-        imgBT : TImageList;
-        dlgOpenRawLog : TOpenDialog;
-        dlgOpenDll : TOpenDialog;
-        ToolBar1 : TToolBar;
-        btnOpenRaw : TToolButton;
-        ToolButton1 : TToolButton;
-        btnNoExplode : TToolButton;
-        btnExplode : TToolButton;
-        ToolButton6 : TToolButton;
-        btnShowDirrection : TToolButton;
-        btnShowTimeStamp : TToolButton;
-        ToolButton15 : TToolButton;
-        btnUseLib : TToolButton;
-        ToolButton3 : TToolButton;
-        btnDecrypt : TToolButton;
-        ToolButton2 : TToolButton;
-        PageControl1 : TPageControl;
-        TabSheet1 : TTabSheet;
-        TabSheet2 : TTabSheet;
-        memo1 : TJvRichEdit;
-        JvRichEdit1 : TJvRichEdit;
-        TabSheet3 : TTabSheet;
-        waitbar : TPanel;
-        Label3 : TLabel;
-        ProgressBar1 : TProgressBar;
-        lang : TsiLang;
-        procedure btnNoExplodeClick(Sender : TObject);
-        procedure btnExplodeClick(Sender : TObject);
-        procedure btnOpenRawClick(Sender : TObject);
-        procedure btnShowDirrectionClick(Sender : TObject);
-        procedure btnUseLibClick(Sender : TObject);
-        procedure btnDecryptClick(Sender : TObject);
-        procedure ToolButton2Click(Sender : TObject);
-        procedure FormCreate(Sender : TObject);
-        procedure FormDestroy(Sender : TObject);
-        procedure TabSheet1Resize(Sender : TObject);
-    protected
-        procedure CreateParams(var Params : TCreateParams); override;
-    private
+  TfProcessRawLog = class (TForm)
+    imgBT : TImageList;
+    dlgOpenRawLog : TOpenDialog;
+    dlgOpenDll : TOpenDialog;
+    ToolBar1 : TToolBar;
+    btnOpenRaw : TToolButton;
+    ToolButton1 : TToolButton;
+    btnNoExplode : TToolButton;
+    btnExplode : TToolButton;
+    ToolButton6 : TToolButton;
+    btnShowDirrection : TToolButton;
+    btnShowTimeStamp : TToolButton;
+    ToolButton15 : TToolButton;
+    btnUseLib : TToolButton;
+    ToolButton3 : TToolButton;
+    btnDecrypt : TToolButton;
+    ToolButton2 : TToolButton;
+    PageControl1 : TPageControl;
+    TabSheet1 : TTabSheet;
+    TabSheet2 : TTabSheet;
+    memo1 : TJvRichEdit;
+    JvRichEdit1 : TJvRichEdit;
+    TabSheet3 : TTabSheet;
+    waitbar : TPanel;
+    Label3 : TLabel;
+    ProgressBar1 : TProgressBar;
+    lang : TsiLang;
+    procedure btnNoExplodeClick(Sender : TObject);
+    procedure btnExplodeClick(Sender : TObject);
+    procedure btnOpenRawClick(Sender : TObject);
+    procedure btnShowDirrectionClick(Sender : TObject);
+    procedure btnUseLibClick(Sender : TObject);
+    procedure btnDecryptClick(Sender : TObject);
+    procedure ToolButton2Click(Sender : TObject);
+    procedure FormCreate(Sender : TObject);
+    procedure FormDestroy(Sender : TObject);
+    procedure TabSheet1Resize(Sender : TObject);
+  protected
+    procedure CreateParams(var Params : TCreateParams); override;
+  private
     { Private declarations }
-    public
-        filename : string;
-        visual : TfVisual;
-        procedure addcolored(dTime : tdatetime; Direction : byte; data : string);
-        procedure parserawlog(filename : string);
-        function AnotherLoadLibraryXor(const name : string) : boolean;
-        procedure AddPacketToLog(TimeStep : TDateTime; fromserver : boolean; Packet : TPacket);
+  public
+    filename : string;
+    visual : TfVisual;
+    procedure addcolored(dTime : tdatetime; Direction : byte; data : string);
+    procedure parserawlog(filename : string);
+    function AnotherLoadLibraryXor(const name : string) : boolean;
+    procedure AddPacketToLog(TimeStep : TDateTime; fromserver : boolean; Packet : TPacket);
 
     { Public declarations }
-    end;
+  end;
 
 var
-    fProcessRawLog : TfProcessRawLog;
+  fProcessRawLog : TfProcessRawLog;
 
 implementation
 
 uses
-    umain,
-    upacketview,
-    uresourcestrings,
-    uGlobalFuncs,
-    uencdec;
+  umain,
+  upacketview,
+  uresourcestrings,
+  uGlobalFuncs,
+  uencdec;
 
 var
-    encdec : TencDec;
-    anotherXorLib : thandle;
-    AnotherCreateXorIn : function(Value : PCodingClass) : HRESULT; stdcall; //сюда подключаем невхор (глобал)
-    AnotherCreateXorOut : function(Value : PCodingClass) : HRESULT; stdcall; //обе устанавливаются в устанавливается в SettingsDialog (глобал)
+  encdec : TencDec;
+  anotherXorLib : thandle;
+  AnotherCreateXorIn : function(Value : PCodingClass) : HRESULT; stdcall; //сюда подключаем невхор (глобал)
+  AnotherCreateXorOut : function(Value : PCodingClass) : HRESULT; stdcall; //обе устанавливаются в устанавливается в SettingsDialog (глобал)
 
 {$R *.dfm}
 
@@ -100,468 +100,468 @@ var
 
 procedure TfProcessRawLog.addcolored(dTime : tdatetime; Direction : byte; data : string);
 var
-    sDir, stime : string;
-    SelStart : integer;
+  sDir, stime : string;
+  SelStart : integer;
 begin
-    sDir := '';
-    if btnShowDirrection.Down then
-    begin
-        case Direction of
-            PCK_GS_ToClient :
-            begin
-                sdir := 'GS>C ';
-            end;
-            PCK_LS_ToClient :
-            begin
-                sdir := 'LS>C ';
-            end;
-            PCK_GS_ToServer :
-            begin
-                sdir := 'C>GS ';
-            end;
-            PCK_LS_ToServer :
-            begin
-                sdir := 'C>LS ';
-            end;
-        end;
+  sDir := '';
+  if btnShowDirrection.Down then
+  begin
+    case Direction of
+      PCK_GS_ToClient :
+      begin
+        sdir := 'GS>C ';
+      end;
+      PCK_LS_ToClient :
+      begin
+        sdir := 'LS>C ';
+      end;
+      PCK_GS_ToServer :
+      begin
+        sdir := 'C>GS ';
+      end;
+      PCK_LS_ToServer :
+      begin
+        sdir := 'C>LS ';
+      end;
     end;
+  end;
 
-    stime := '';
+  stime := '';
 
-    if btnShowTimeStamp.Down then
-    begin
-        stime := TimeToStr(dTime) + ' ';
-    end;
+  if btnShowTimeStamp.Down then
+  begin
+    stime := TimeToStr(dTime) + ' ';
+  end;
 
   //Добавляем
 
-    SelStart := memo1.GetTextLen - memo1.Lines.Count;
-    if length(stime + sdir) > 0 then
-    begin
-        memo1.Lines.Add(stime + sdir);
-    end;
+  SelStart := memo1.GetTextLen - memo1.Lines.Count;
+  if length(stime + sdir) > 0 then
+  begin
+    memo1.Lines.Add(stime + sdir);
+  end;
 
-    while Length(data) > 1024 do
-    begin
-        memo1.Lines.Add(copy(data, 1, 1024));
-        Delete(data, 1, 1024);
-    end;
-    memo1.Lines.Add(data);
+  while Length(data) > 1024 do
+  begin
+    memo1.Lines.Add(copy(data, 1, 1024));
+    Delete(data, 1, 1024);
+  end;
+  memo1.Lines.Add(data);
 
-    if stime <> '' then
-    begin
+  if stime <> '' then
+  begin
 {    memo1.SelStart := SelStart;
     memo1.SelLength := length(stime)-1;
     if Direction = PCK_GS_ToServer then
       memo1.SelAttributes.BackColor := Direction * $24444;
     else
       memo1.SelAttributes.BackColor := Direction * $24444;}
-        SelStart := SelStart + length(stime);
-    end;
+    SelStart := SelStart + length(stime);
+  end;
 
-    if sdir <> '' then
+  if sdir <> '' then
+  begin
+    memo1.SelStart := SelStart;
+    memo1.SelLength := length(sdir) - 1;
+    if Direction = PCK_GS_ToServer then
     begin
-        memo1.SelStart := SelStart;
-        memo1.SelLength := length(sdir) - 1;
-        if Direction = PCK_GS_ToServer then
-        begin
-            memo1.SelAttributes.BackColor := $AAAAAA;
-        end
-        else
-        begin
-            memo1.SelAttributes.BackColor := $EEEEEE;
-        end;
-//    SelStart := SelStart + length(sdir)-1
+      memo1.SelAttributes.BackColor := $AAAAAA;
+    end
+    else
+    begin
+      memo1.SelAttributes.BackColor := $EEEEEE;
     end;
+//    SelStart := SelStart + length(sdir)-1
+  end;
 
 end;
 
 procedure TfProcessRawLog.btnNoExplodeClick(Sender : TObject);
 begin
-    btnExplode.Down := false;
-    btnDecrypt.Down := false;
-    btnNoExplode.Down := true;
+  btnExplode.Down := false;
+  btnDecrypt.Down := false;
+  btnNoExplode.Down := true;
 end;
 
 procedure TfProcessRawLog.btnExplodeClick(Sender : TObject);
 begin
-    btnExplode.Down := true;
-    btnNoExplode.Down := false;
+  btnExplode.Down := true;
+  btnNoExplode.Down := false;
 end;
 
 procedure TfProcessRawLog.btnOpenRawClick(Sender : TObject);
 begin
-    ChDir(AppPath + 'logs\');
-    if dlgOpenRawLog.Execute then
-    begin
-        filename := dlgOpenRawLog.FileName;
-        parserawlog(FileName);
-    end;
-    ChDir(AppPath + 'settings\');
+  ChDir(AppPath + 'logs\');
+  if dlgOpenRawLog.Execute then
+  begin
+    filename := dlgOpenRawLog.FileName;
+    parserawlog(FileName);
+  end;
+  ChDir(AppPath + 'settings\');
 end;
 
 function TfProcessRawLog.AnotherLoadLibraryXor(const name : string) : boolean;
 begin
 // загружаем XOR dll
-    if anotherXorLib <> 0 then
-    begin
-        FreeLibrary(anotherXorLib);
-        AddToLog(format(rsUnLoadDllSuccessfully, [name]));
-    end;
+  if anotherXorLib <> 0 then
+  begin
+    FreeLibrary(anotherXorLib);
+    AddToLog(format(rsUnLoadDllSuccessfully, [name]));
+  end;
 
-    anotherXorLib := LoadLibrary(pchar(name));
-    if anotherXorLib > 0 then
+  anotherXorLib := LoadLibrary(pchar(name));
+  if anotherXorLib > 0 then
+  begin
+    AddToLog(format(rsLoadDllSuccessfully, [name]));
+    result := true;
+    @AnotherCreateXorIn := GetProcAddress(anotherXorLib, 'CreateCoding');
+    @AnotherCreateXorOut := GetProcAddress(anotherXorLib, 'CreateCodingOut');
+    if @AnotherCreateXorOut = nil then
     begin
-        AddToLog(format(rsLoadDllSuccessfully, [name]));
-        result := true;
-        @AnotherCreateXorIn := GetProcAddress(anotherXorLib, 'CreateCoding');
-        @AnotherCreateXorOut := GetProcAddress(anotherXorLib, 'CreateCodingOut');
-        if @AnotherCreateXorOut = nil then
-        begin
-            AnotherCreateXorOut := AnotherCreateXorIn;
-        end;
-    end
-    else
-    begin
-        Result := false;
-        AddToLog(format(rsLoadDllUnSuccessful, [name]));
+      AnotherCreateXorOut := AnotherCreateXorIn;
     end;
+  end
+  else
+  begin
+    Result := false;
+    AddToLog(format(rsLoadDllUnSuccessful, [name]));
+  end;
 end;
 
 
 procedure TfProcessRawLog.parserawlog;
 var
-    ms : TMemoryStream;
-    Size : word;
-    dTime : double;
-    Dirrection : byte;
-    data : array[0..$ffff] of byte;
-    dataToServ, DataToClient : array[0..$ffff] of byte;
-    BufSizeToServ, BufSizeToClient : cardinal;
-    pcktSize : word;
-    TmpPacket, TmpPacket2, tmppacket3 : TPacket;
-    pcktCount : integer;
-    pm : integer;
+  ms : TMemoryStream;
+  Size : word;
+  dTime : double;
+  Dirrection : byte;
+  data : array[0..$ffff] of byte;
+  dataToServ, DataToClient : array[0..$ffff] of byte;
+  BufSizeToServ, BufSizeToClient : cardinal;
+  pcktSize : word;
+  TmpPacket, TmpPacket2, tmppacket3 : TPacket;
+  pcktCount : integer;
+  pm : integer;
 begin
-    TabSheet1.Show;
-    pm := 0;
-    pcktCount := 0;
-    if btnDecrypt.Down then
-    begin
-        anotherXorLib := 0;
-        EncDec := TencDec.create;
-        EncDec.ParentTtunel := nil;
-        EncDec.ParentLSP := nil;
-        EncDec.Settings := GlobalSettings;
+  TabSheet1.Show;
+  pm := 0;
+  pcktCount := 0;
+  if btnDecrypt.Down then
+  begin
+    anotherXorLib := 0;
+    EncDec := TencDec.create;
+    EncDec.ParentTtunel := nil;
+    EncDec.ParentLSP := nil;
+    EncDec.Settings := GlobalSettings;
 
-        if btnUseLib.Down then
-        begin
-            AnotherLoadLibraryXor(dlgOpenDll.FileName);
-        end
-        else
-        begin
-            if anotherXorLib <> 0 then
-            begin
-                FreeLibrary(anotherXorLib);
-            end;
-            @AnotherCreateXorIn := nil;
-            @AnotherCreateXorOut := nil;
-        end;
+    if btnUseLib.Down then
+    begin
+      AnotherLoadLibraryXor(dlgOpenDll.FileName);
+    end
+    else
+    begin
+      if anotherXorLib <> 0 then
+      begin
+        FreeLibrary(anotherXorLib);
+      end;
+      @AnotherCreateXorIn := nil;
+      @AnotherCreateXorOut := nil;
+    end;
 
     //xorS, xorC - init
-        if Assigned(AnotherCreateXorIn) then
-        begin
-            AnotherCreateXorIn(@EncDec.xorS);
-            encdec.innerXor := true;
-        end
-        else
-        begin
-            EncDec.xorS := L2Xor.Create;
-        end;
-
-        if Assigned(AnotherCreateXorOut) then
-        begin
-            AnotherCreateXorOut(@EncDec.xorC);
-            encdec.innerXor := true;
-        end
-        else
-        begin
-            EncDec.xorC := L2Xor.Create;
-        end;
+    if Assigned(AnotherCreateXorIn) then
+    begin
+      AnotherCreateXorIn(@EncDec.xorS);
+      encdec.innerXor := true;
+    end
+    else
+    begin
+      EncDec.xorS := L2Xor.Create;
     end;
 
-
-    if not FileExists(filename) then
+    if Assigned(AnotherCreateXorOut) then
     begin
-        exit;
+      AnotherCreateXorOut(@EncDec.xorC);
+      encdec.innerXor := true;
+    end
+    else
+    begin
+      EncDec.xorC := L2Xor.Create;
     end;
-    memo1.Lines.BeginUpdate;
-    waitbar.Show;
-    memo1.Clear;
-    ms := TMemoryStream.Create;
-    ms.LoadFromFile(filename);
-    BufSizeToServ := 0;
-    BufSizeToClient := 0;
-    ProgressBar1.Max := ms.Size;
-    visual.dump.Clear;
-    while ms.Position < ms.Size - 11 do
+  end;
+
+
+  if not FileExists(filename) then
+  begin
+    exit;
+  end;
+  memo1.Lines.BeginUpdate;
+  waitbar.Show;
+  memo1.Clear;
+  ms := TMemoryStream.Create;
+  ms.LoadFromFile(filename);
+  BufSizeToServ := 0;
+  BufSizeToClient := 0;
+  ProgressBar1.Max := ms.Size;
+  visual.dump.Clear;
+  while ms.Position < ms.Size - 11 do
+  begin
+    dec(pm);
+    if pm < 0 then
     begin
-        dec(pm);
-        if pm < 0 then
-        begin
-            pm := 50;
-            Application.ProcessMessages;
-            ProgressBar1.Position := ms.Position;
-        end;
-        ms.ReadBuffer(dirrection, 1);
-        ms.ReadBuffer(size, 2);
-        ms.ReadBuffer(dtime, 8);
+      pm := 50;
+      Application.ProcessMessages;
+      ProgressBar1.Position := ms.Position;
+    end;
+    ms.ReadBuffer(dirrection, 1);
+    ms.ReadBuffer(size, 2);
+    ms.ReadBuffer(dtime, 8);
 
-        if (ms.Position + Size > ms.Size) or (size < 1) then
+    if (ms.Position + Size > ms.Size) or (size < 1) then
+    begin
+      MessageBox(0, pchar(Lang.GetTextOrDefault('Corrupted' (* 'Лог RAW пакетов скорей всего поврежден' *))), pchar(Lang.GetTextOrDefault('Error' (* 'Ошибка' *))), MB_OK);
+      break;
+    end;
+    ms.ReadBuffer(data[0], size);
+    if (btnNoExplode.Down) and (not btnDecrypt.Down) then
+    begin
+      addcolored(dTime, Dirrection, ByteArrayToHex(data, Size));
+    end
+    else //Explode
+    begin
+      case Dirrection of
+        PCK_GS_ToServer, PCK_LS_ToServer :
         begin
-            MessageBox(0, pchar(Lang.GetTextOrDefault('Corrupted' (* 'Лог RAW пакетов скорей всего поврежден' *))), pchar(Lang.GetTextOrDefault('Error' (* 'Ошибка' *))), MB_OK);
-            break;
-        end;
-        ms.ReadBuffer(data[0], size);
-        if (btnNoExplode.Down) and (not btnDecrypt.Down) then
-        begin
-            addcolored(dTime, Dirrection, ByteArrayToHex(data, Size));
-        end
-        else //Explode
-        begin
-            case Dirrection of
-                PCK_GS_ToServer, PCK_LS_ToServer :
+          Move(data, dataToServ[BufSizeToServ], Size);
+          inc(BufSizeToServ, size);
+          if BufSizeToServ >= 2 then
+          begin
+            Move(dataToServ[0], pcktSize, 2);
+            while (pcktSize > 0) and (pcktSize <= BufSizeToServ) do
+            begin
+              Move(dataToServ[0], data[0], pcktSize); //получаем пакет
+              Move(dataToServ[pcktSize], dataToServ[0], BufSizeToServ); //затираем в временом буфере
+              Dec(BufSizeToServ, pcktSize);
+              if btnDecrypt.Down then
+              begin
+                inc(pcktCount);
+                move(data[0], TmpPacket.PacketAsByteArray[0], pcktSize);
+                TmpPacket2 := TmpPacket;
+                encdec.DecodePacket(TmpPacket2, Dirrection);
+                tmppacket3 := TmpPacket2;
+                addcolored(dTime, Dirrection, ByteArrayToHex(TmpPacket2.PacketAsByteArray, TmpPacket2.Size)); //рисуем
+                AddPacketToLog(dTime, false, TmpPacket2);
+                encdec.EncodePacket(tmppacket3, Dirrection);
+
+                if not CompareMem(@tmpPacket, @tmppacket3, tmpPacket.Size) then
                 begin
-                    Move(data, dataToServ[BufSizeToServ], Size);
-                    inc(BufSizeToServ, size);
-                    if BufSizeToServ >= 2 then
-                    begin
-                        Move(dataToServ[0], pcktSize, 2);
-                        while (pcktSize > 0) and (pcktSize <= BufSizeToServ) do
-                        begin
-                            Move(dataToServ[0], data[0], pcktSize); //получаем пакет
-                            Move(dataToServ[pcktSize], dataToServ[0], BufSizeToServ); //затираем в временом буфере
-                            Dec(BufSizeToServ, pcktSize);
-                            if btnDecrypt.Down then
-                            begin
-                                inc(pcktCount);
-                                move(data[0], TmpPacket.PacketAsByteArray[0], pcktSize);
-                                TmpPacket2 := TmpPacket;
-                                encdec.DecodePacket(TmpPacket2, Dirrection);
-                                tmppacket3 := TmpPacket2;
-                                addcolored(dTime, Dirrection, ByteArrayToHex(TmpPacket2.PacketAsByteArray, TmpPacket2.Size)); //рисуем
-                                AddPacketToLog(dTime, false, TmpPacket2);
-                                encdec.EncodePacket(tmppacket3, Dirrection);
-
-                                if not CompareMem(@tmpPacket, @tmppacket3, tmpPacket.Size) then
-                                begin
                    //Неправильно расшифровует либо криптует
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('packetnum' (* 'Пакет #' *)) + inttostr(pcktCount) + Lang.GetTextOrDefault('be4decrypt' (* ' до декриптовки/криптовки:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket.PacketAsByteArray[0], TmpPacket.Size));
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('decrypted' (* 'Вид декриптованого:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket2.PacketAsByteArray[0], TmpPacket.Size));
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('afterencrypt' (* 'После декриптовки/криптовки:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket3.PacketAsByteArray[0], TmpPacket.Size));
-                                    ;
-                                end;
-                            end
-                            else
-                            begin
-                                addcolored(dTime, Dirrection, ByteArrayToHex(data, pcktSize));
-                            end; //рисуем
-
-                            if BufSizeToServ > 2 then
-                            begin
-                                Move(dataToServ[0], pcktSize, 2);
-                            end
-                            else
-                            begin
-                                pcktSize := 0;
-                            end;
-                        end;
-                    end;
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('packetnum' (* 'Пакет #' *)) + inttostr(pcktCount) + Lang.GetTextOrDefault('be4decrypt' (* ' до декриптовки/криптовки:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket.PacketAsByteArray[0], TmpPacket.Size));
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('decrypted' (* 'Вид декриптованого:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket2.PacketAsByteArray[0], TmpPacket.Size));
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('afterencrypt' (* 'После декриптовки/криптовки:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket3.PacketAsByteArray[0], TmpPacket.Size));
+                  ;
                 end;
+              end
+              else
+              begin
+                addcolored(dTime, Dirrection, ByteArrayToHex(data, pcktSize));
+              end; //рисуем
 
-                PCK_GS_ToClient, PCK_LS_ToClient :
-                begin
-                    Move(data, DataToClient[BufSizeToClient], Size);
-                    inc(BufSizeToClient, size);
-
-                    if BufSizeToClient >= 2 then
-                    begin
-                        Move(dataToClient[0], pcktSize, 2);
-                        while (pcktSize > 0) and (pcktSize <= BufSizeToClient) do
-                        begin
-                            Move(dataToClient[0], data[0], pcktSize); //получаем пакет
-                            Move(dataToClient[pcktSize], dataToClient[0], BufSizeToClient); //затираем в временом буфере
-                            Dec(BufSizeToClient, pcktSize);
-                            if btnDecrypt.Down then
-                            begin
-                                inc(pcktCount);
-                                move(data[0], TmpPacket.PacketAsByteArray[0], pcktSize);
-                                TmpPacket2 := TmpPacket;
-                                encdec.DecodePacket(TmpPacket2, Dirrection);
-                                tmppacket3 := TmpPacket2;
-                                addcolored(dTime, Dirrection, ByteArrayToHex(TmpPacket2.PacketAsByteArray, TmpPacket2.Size)); //рисуем
-                                AddPacketToLog(dTime, true, TmpPacket2);
-                                encdec.EncodePacket(tmppacket3, Dirrection);
-
-                                if not CompareMem(@tmpPacket, @tmppacket3, tmpPacket.Size) then
-                                begin
-                   //Неправильно расшифровует либо криптует
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('packetnum' (* 'Пакет #' *)) + inttostr(pcktCount) + Lang.GetTextOrDefault('be4decrypt' (* ' до декриптовки/криптовки:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket.PacketAsByteArray[0], TmpPacket.Size));
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('decrypted' (* 'Вид декриптованого:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket2.PacketAsByteArray[0], TmpPacket.Size));
-                                    JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('afterencrypt' (* 'После декриптовки/криптовки:' *)));
-                                    JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket3.PacketAsByteArray[0], TmpPacket.Size));
-                                    ;
-                                end;
-                            end
-                            else
-                            begin
-                                addcolored(dTime, Dirrection, ByteArrayToHex(data, pcktSize));
-                            end; //рисуем
-                            if BufSizeToClient > 2 then
-                            begin
-                                Move(dataToClient[0], pcktSize, 2);
-                            end
-                            else
-                            begin
-                                pcktSize := 0;
-                            end;
-                        end;
-                    end;
-                end;
+              if BufSizeToServ > 2 then
+              begin
+                Move(dataToServ[0], pcktSize, 2);
+              end
+              else
+              begin
+                pcktSize := 0;
+              end;
             end;
+          end;
         end;
-    end;
 
-    memo1.Lines.EndUpdate;
-    waitbar.Hide;
-    ms.free;
-    if btnDecrypt.Down then
-    begin
-        TabSheet2.Show;
-        encdec.destroy;
-        visual.PacketListRefresh(true);
+        PCK_GS_ToClient, PCK_LS_ToClient :
+        begin
+          Move(data, DataToClient[BufSizeToClient], Size);
+          inc(BufSizeToClient, size);
+
+          if BufSizeToClient >= 2 then
+          begin
+            Move(dataToClient[0], pcktSize, 2);
+            while (pcktSize > 0) and (pcktSize <= BufSizeToClient) do
+            begin
+              Move(dataToClient[0], data[0], pcktSize); //получаем пакет
+              Move(dataToClient[pcktSize], dataToClient[0], BufSizeToClient); //затираем в временом буфере
+              Dec(BufSizeToClient, pcktSize);
+              if btnDecrypt.Down then
+              begin
+                inc(pcktCount);
+                move(data[0], TmpPacket.PacketAsByteArray[0], pcktSize);
+                TmpPacket2 := TmpPacket;
+                encdec.DecodePacket(TmpPacket2, Dirrection);
+                tmppacket3 := TmpPacket2;
+                addcolored(dTime, Dirrection, ByteArrayToHex(TmpPacket2.PacketAsByteArray, TmpPacket2.Size)); //рисуем
+                AddPacketToLog(dTime, true, TmpPacket2);
+                encdec.EncodePacket(tmppacket3, Dirrection);
+
+                if not CompareMem(@tmpPacket, @tmppacket3, tmpPacket.Size) then
+                begin
+                   //Неправильно расшифровует либо криптует
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('packetnum' (* 'Пакет #' *)) + inttostr(pcktCount) + Lang.GetTextOrDefault('be4decrypt' (* ' до декриптовки/криптовки:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket.PacketAsByteArray[0], TmpPacket.Size));
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('decrypted' (* 'Вид декриптованого:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket2.PacketAsByteArray[0], TmpPacket.Size));
+                  JvRichEdit1.Lines.Add(Lang.GetTextOrDefault('afterencrypt' (* 'После декриптовки/криптовки:' *)));
+                  JvRichEdit1.Lines.Add(ByteArrayToHex(TmpPacket3.PacketAsByteArray[0], TmpPacket.Size));
+                  ;
+                end;
+              end
+              else
+              begin
+                addcolored(dTime, Dirrection, ByteArrayToHex(data, pcktSize));
+              end; //рисуем
+              if BufSizeToClient > 2 then
+              begin
+                Move(dataToClient[0], pcktSize, 2);
+              end
+              else
+              begin
+                pcktSize := 0;
+              end;
+            end;
+          end;
+        end;
+      end;
     end;
+  end;
+
+  memo1.Lines.EndUpdate;
+  waitbar.Hide;
+  ms.free;
+  if btnDecrypt.Down then
+  begin
+    TabSheet2.Show;
+    encdec.destroy;
+    visual.PacketListRefresh(true);
+  end;
 
 end;
 
 
 procedure TfProcessRawLog.btnShowDirrectionClick(Sender : TObject);
 begin
-    if FileExists(filename) then
-    begin
-        parserawlog(FileName);
-    end;
+  if FileExists(filename) then
+  begin
+    parserawlog(FileName);
+  end;
 end;
 
 procedure TfProcessRawLog.btnUseLibClick(Sender : TObject);
 begin
-    if btnUseLib.Down then
+  if btnUseLib.Down then
+  begin
+    if not dlgOpenDll.Execute then
     begin
-        if not dlgOpenDll.Execute then
-        begin
-            btnUseLib.Down := false;
-        end
-        else
-        begin
-            btnUseLib.Down := FileExists(dlgOpenDll.FileName);
-        end;
+      btnUseLib.Down := false;
+    end
+    else
+    begin
+      btnUseLib.Down := FileExists(dlgOpenDll.FileName);
     end;
-    ChDir(AppPath);
+  end;
+  ChDir(AppPath);
 end;
 
 procedure TfProcessRawLog.btnDecryptClick(Sender : TObject);
 begin
-    btnNoExplode.Down := false;
-    btnExplode.Down := true;
+  btnNoExplode.Down := false;
+  btnExplode.Down := true;
 end;
 
 procedure TfProcessRawLog.ToolButton2Click(Sender : TObject);
 begin
-    parserawlog(filename);
+  parserawlog(filename);
 end;
 
 procedure TfProcessRawLog.AddPacketToLog;
 var
-    TimeStepB : array [0..7] of byte;
-    apendix : string;
-    sLastPacket : string;
+  TimeStepB : array [0..7] of byte;
+  apendix : string;
+  sLastPacket : string;
 begin
-    if Packet.Size = 0 then
-    begin
-        exit;
-    end;
+  if Packet.Size = 0 then
+  begin
+    exit;
+  end;
   //на серве - апендикс 04, на клиент = 03
-    if FromServer then
-    begin
-        apendix := '03';
-    end
-    else
-    begin
-        apendix := '04';
-    end;
+  if FromServer then
+  begin
+    apendix := '03';
+  end
+  else
+  begin
+    apendix := '04';
+  end;
 
-    Move(TimeStep, TimeStepB, 8);
+  Move(TimeStep, TimeStepB, 8);
 
-    sLastPacket :=
-        Apendix +
-        ByteArrayToHex(TimeStepB, 8) +
-        ByteArrayToHex(Packet.PacketAsByteArray, Packet.Size);
+  sLastPacket :=
+    Apendix +
+    ByteArrayToHex(TimeStepB, 8) +
+    ByteArrayToHex(Packet.PacketAsByteArray, Packet.Size);
 
-    visual.dump.Add(sLastPacket);
+  visual.dump.Add(sLastPacket);
 end;
 
 procedure TfProcessRawLog.FormCreate(Sender : TObject);
 begin
-    loadpos(self);
+  loadpos(self);
 
 //создаем визуал сами (без визуал.инит)
-    visual := TfVisual.Create(TabSheet3);
-    visual.translate;
-    visual.TabSheet2.TabVisible := false;
-    visual.TabSheet2.Hide;
-    visual.TabSheet3.TabVisible := false;
-    visual.TabSheet3.Hide;
-    visual.TabSheet1.TabVisible := false;
-    visual.PageControl1.ActivePageIndex := visual.TabSheet1.PageIndex;
-    visual.ToolBar3.Hide;
-    visual.btnSaveRaw.Hide;
-    visual.tbtnToSend.Hide;
-    visual.ToolButton2.Hide;
-    visual.ToolButton5.Hide;
-    visual.BtnAutoSavePckts.Down := false;
-    visual.BtnAutoSavePckts.Hide;
-    visual.TabSheet1.Show;
-    visual.Parent := TabSheet3;
-    visual.Dump := TStringList.Create;
-    visual.PacketView := TfPacketView.Create(self);
-    visual.PacketView.Parent := visual.packetVievPanel;
-    visual.Show;
+  visual := TfVisual.Create(TabSheet3);
+  visual.translate;
+  visual.TabSheet2.TabVisible := false;
+  visual.TabSheet2.Hide;
+  visual.TabSheet3.TabVisible := false;
+  visual.TabSheet3.Hide;
+  visual.TabSheet1.TabVisible := false;
+  visual.PageControl1.ActivePageIndex := visual.TabSheet1.PageIndex;
+  visual.ToolBar3.Hide;
+  visual.btnSaveRaw.Hide;
+  visual.tbtnToSend.Hide;
+  visual.ToolButton2.Hide;
+  visual.ToolButton5.Hide;
+  visual.BtnAutoSavePckts.Down := false;
+  visual.BtnAutoSavePckts.Hide;
+  visual.TabSheet1.Show;
+  visual.Parent := TabSheet3;
+  visual.Dump := TStringList.Create;
+  visual.PacketView := TfPacketView.Create(self);
+  visual.PacketView.Parent := visual.packetVievPanel;
+  visual.Show;
 end;
 
 procedure TfProcessRawLog.FormDestroy(Sender : TObject);
 begin
-    savepos(self);
+  savepos(self);
 
-    visual.Dump.Destroy;
-    visual.PacketView.destroy;
-    visual.Destroy;
+  visual.Dump.Destroy;
+  visual.PacketView.destroy;
+  visual.Destroy;
 end;
 
 procedure TfProcessRawLog.CreateParams(var Params : TCreateParams);
 begin
-    inherited;
-    Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  inherited;
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
 end;
 
 procedure TfProcessRawLog.TabSheet1Resize(Sender : TObject);
 begin
-    waitbar.Left := round((Self.Width - waitbar.Width) / 2);
-    waitbar.Top := round((Self.Height - waitbar.Height) / 2);
+  waitbar.Left := round((Self.Width - waitbar.Width) / 2);
+  waitbar.Top := round((Self.Height - waitbar.Height) / 2);
 end;
 
 end.
