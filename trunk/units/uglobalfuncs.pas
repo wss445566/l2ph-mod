@@ -3,50 +3,50 @@ unit uGlobalFuncs;
 interface
 
 uses
-    uResourceStrings,
-    uSharedStructs,
-    sysutils,
-    windows,
-    Classes,
-    TlHelp32,
-    PSAPI,
-    advApiHook,
-    inifiles,
-    Controls,
-    Messages,
-    uencdec,
-    ComCtrls;
+  uResourceStrings,
+  uSharedStructs,
+  sysutils,
+  windows,
+  Classes,
+  TlHelp32,
+  PSAPI,
+  advApiHook,
+  inifiles,
+  Controls,
+  Messages,
+  uencdec,
+  ComCtrls;
 
 const
-    WM_Dll_Log = $04F0;               //получаем сообщение из inject.dll
-    WM_NewAction = WM_APP + 107;
-    WM_AddLog = WM_APP + 108;
-    WM_NewPacket = WM_APP + 109;
-    WM_ProcessPacket = WM_APP + 110;
-    WM_UpdAutoCompleate = WM_APP + 111;
-    WM_BalloonHint = WM_APP + 112;
+  WM_Dll_Log = $04F0;               //получаем сообщение из inject.dll
+  WM_NewAction = WM_APP + 107;
+  WM_AddLog = WM_APP + 108;
+  WM_NewPacket = WM_APP + 109;
+  WM_ProcessPacket = WM_APP + 110;
+  WM_UpdAutoCompleate = WM_APP + 111;
+  WM_BalloonHint = WM_APP + 112;
 
     //TencDec вызывает такие
-    TencDec_Action_LOG = 1; //Данные в sLastPacket;  обрабатчик - PacketSend
-    TencDec_Action_MSG = 2; //дaнные в sLastMessage; обработчик - Log
-    TencDec_Action_GotName = 3; //данные в name; обработчик - UpdateComboBox1 (требует видоизменения)
-    TencDec_Action_ClearPacketLog = 4; //данные нет. просто акшин; обработчик ClearPacketsLog
+  TencDec_Action_LOG = 1; //Данные в sLastPacket;  обрабатчик - PacketSend
+  TencDec_Action_MSG = 2; //дaнные в sLastMessage; обработчик - Log
+  TencDec_Action_GotName = 3; //данные в name; обработчик - UpdateComboBox1 (требует видоизменения)
+  TencDec_Action_ClearPacketLog = 4; //данные нет. просто акшин; обработчик ClearPacketsLog
     //TSocketEngine вызывает эти
-    TSocketEngine_Action_MSG = 5; //данные в sLastMessage; обработчик - Log
-    Ttunel_Action_connect_server = 6;
-    Ttunel_Action_disconnect_server = 7;
-    Ttunel_Action_connect_client = 8;
-    Ttunel_Action_disconnect_client = 9;
-    Ttulel_action_tunel_created = 10;
-    Ttulel_action_tunel_destroyed = 11;
+  TSocketEngine_Action_MSG = 5; //данные в sLastMessage; обработчик - Log
+  Ttunel_Action_connect_server = 6;
+  Ttunel_Action_disconnect_server = 7;
+  Ttunel_Action_connect_client = 8;
+  Ttunel_Action_disconnect_client = 9;
+  Ttulel_action_tunel_created = 10;
+  Ttulel_action_tunel_destroyed = 11;
                                 //Reserved 100-115!!!
 type
-    SendMessageParam = class
-        packet : tpacket;
-        FromServer : boolean;
-        Id : integer;
-        tunel : Tobject;
-    end;
+  SendMessageParam = class
+    packet : tpacket;
+    FromServer : boolean;
+    Id : integer;
+    tunel : Tobject;
+  end;
 
 function PacketIdToHex(id, subid, sub2id, size : integer) : string;
 procedure GetPFandPL(var pf : TStringList; var pl : TListView; FromServer : boolean);
@@ -80,37 +80,37 @@ function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boo
 function GetNamePacket(s : string) : string; // вырезаем название пакета из строки
 
 var
-    AppPath : string;
-    isGlobalDestroying : boolean;
-    hXorLib : THandle; //хендл библиотеки невхор. устанавливается в SettingsDialog
-    pInjectDll : Pointer; //поинер к инжект.длл устанавливается в SettingsDialog
-    CreateXorIn : function(Value : PCodingClass) : HRESULT; stdcall; //сюда подключаем невхор (глобал)
-    CreateXorOut : function(Value : PCodingClass) : HRESULT; stdcall; //обе устанавливаются в устанавливается в SettingsDialog (глобал)
+  AppPath : string;
+  isGlobalDestroying : boolean;
+  hXorLib : THandle; //хендл библиотеки невхор. устанавливается в SettingsDialog
+  pInjectDll : Pointer; //поинер к инжект.длл устанавливается в SettingsDialog
+  CreateXorIn : function(Value : PCodingClass) : HRESULT; stdcall; //сюда подключаем невхор (глобал)
+  CreateXorOut : function(Value : PCodingClass) : HRESULT; stdcall; //обе устанавливаются в устанавливается в SettingsDialog (глобал)
 
-    sClientsList, //список процессов подлежащих перехвату устанавливается в SettingsDialog
-    sIgnorePorts, //перечень портов соединение по которым игнорируется устанавливается в SettingsDialog
-    sNewxor, //путь к невхор.длл устанавливается в SettingsDialog
-    sInject, //путь к инжект.длл устанавливается в SettingsDialog
-    sLSP : string; //путь к лсп модулю. устанавливается в SettingsDialog
-    LocalPort : word; //текущий порт. устанавливается в SettingsDialog.
-    AllowExit : boolean; //разрешать выход. устанавливается в SettingsDialog
+  sClientsList, //список процессов подлежащих перехвату устанавливается в SettingsDialog
+  sIgnorePorts, //перечень портов соединение по которым игнорируется устанавливается в SettingsDialog
+  sNewxor, //путь к невхор.длл устанавливается в SettingsDialog
+  sInject, //путь к инжект.длл устанавливается в SettingsDialog
+  sLSP : string; //путь к лсп модулю. устанавливается в SettingsDialog
+  LocalPort : word; //текущий порт. устанавливается в SettingsDialog.
+  AllowExit : boolean; //разрешать выход. устанавливается в SettingsDialog
 
     //коэфф преобразования NpcID, необходим для правильного определения имени НПЦ
-    kNpcID : cardinal;
+  kNpcID : cardinal;
 
-    GlobalSettings : TEncDecSettings; //текущие настройки для ЕнкДек устанавливается в SettingsDialog
-    filterS, filterC : string; //строка фильтров
+  GlobalSettings : TEncDecSettings; //текущие настройки для ЕнкДек устанавливается в SettingsDialog
+  filterS, filterC : string; //строка фильтров
 
   //протоколы (packets???.ini) поддерживаемых пакетхаком
 type
-    TProtocolVersion = (AION, AION27,
-        CHRONICLE4, CHRONICLE5,
-        INTERLUDE,
-        GRACIA, GRACIAFINAL, GRACIAEPILOGUE,
-        FREYA, HIGHFIVE, GOD, GOD583, GOD603, GODxxx);
+  TProtocolVersion = (AION, AION27,
+    CHRONICLE4, CHRONICLE5,
+    INTERLUDE,
+    GRACIA, GRACIAFINAL, GRACIAEPILOGUE,
+    FREYA, HIGHFIVE, GOD, GOD583, GOD603, GODxxx);
 
 var
-    GlobalProtocolVersion : TProtocolVersion = AION;
+  GlobalProtocolVersion : TProtocolVersion = AION;
 
 procedure AddToLog(msg : string); //добавляем запись в frmLogForm.log
 procedure BalloonHint(title, msg : string);
@@ -122,386 +122,386 @@ function GetModifTime(const FileName : string) : TDateTime;
 function DataPckToStrPck(var pck) : string; stdcall;
 
 var
-    l2pxversion_array : array[0..3] of byte; //теперь заполняется вызовом FillVersion_a
-    l2pxversion : longword absolute l2pxversion_array;
+  l2pxversion_array : array[0..3] of byte; //теперь заполняется вызовом FillVersion_a
+  l2pxversion : longword absolute l2pxversion_array;
 
-    MaxLinesInLog : integer; //максимальное количество строк в логе после которого надо скинутб в файл и очистить лог
-    MaxLinesInPktLog : integer; //максимальное количество строк в логе пакетов после которого надо скинутб в файл и очистить лог
-    isDestroying : boolean = false;
-    PacketsNames, PacketsFromS, PacketsFromC : TStringList;
+  MaxLinesInLog : integer; //максимальное количество строк в логе после которого надо скинутб в файл и очистить лог
+  MaxLinesInPktLog : integer; //максимальное количество строк в логе пакетов после которого надо скинутб в файл и очистить лог
+  isDestroying : boolean = false;
+  PacketsNames, PacketsFromS, PacketsFromC : TStringList;
     //для Lineage II
-    SysMsgIdList,  //от сель
-    ItemsList, NpcIdList, ClassIdList, AugmentList, SkillList : TStringList;
+  SysMsgIdList,  //от сель
+  ItemsList, NpcIdList, ClassIdList, AugmentList, SkillList : TStringList;
     //для Aion
-    SysMsgIdListAion, ItemsListAion, ClassIdListAion, ClientStringsAion, SkillListAion : TStringList; //и до сель - используются fPacketFilter
+  SysMsgIdListAion, ItemsListAion, ClassIdListAion, ClientStringsAion, SkillListAion : TStringList; //и до сель - используются fPacketFilter
 
-    GlobalRawAllowed : boolean; //глобальная установка не разрешающая освобожать фреймы при обрыве соединений
-    Options, PacketsINI : TMemIniFile;
-    GetFuncINI : TMemIniFile;
-    wlimit, looplimit : integer;
+  GlobalRawAllowed : boolean; //глобальная установка не разрешающая освобожать фреймы при обрыве соединений
+  Options, PacketsINI : TMemIniFile;
+  GetFuncINI : TMemIniFile;
+  wlimit, looplimit : integer;
 
 implementation
 
 uses
-    uMainReplacer,
-    uMain,
-    uFilterForm,
-    forms,
-    udata,
-    usocketengine,
-    ulogform;
+  uMainReplacer,
+  uMain,
+  uFilterForm,
+  forms,
+  udata,
+  usocketengine,
+  ulogform;
 
 function GetModifTime(const FileName : string) : TDateTime;
 var
-    h : THandle;
-    Info1, Info2, Info3 : TFileTime;
-    SysTimeStruct : SYSTEMTIME;
-    TimeZoneInfo : TTimeZoneInformation;
-    Bias : double;
+  h : THandle;
+  Info1, Info2, Info3 : TFileTime;
+  SysTimeStruct : SYSTEMTIME;
+  TimeZoneInfo : TTimeZoneInformation;
+  Bias : double;
 begin
-    Result := 0;
-    Bias := 0;
-    if not FileExists(FileName) then
-    begin
-        exit;
+  Result := 0;
+  Bias := 0;
+  if not FileExists(FileName) then
+  begin
+    exit;
+  end;
+  h := FileOpen(FileName, fmOpenRead or fmShareDenyNone);
+  if h > 0 then
+  begin
+    try
+      if GetTimeZoneInformation(TimeZoneInfo) <> $FFFFFFFF then
+      begin
+        Bias := TimeZoneInfo.Bias / 1440;
+      end; // 60x24
+      GetFileTime(h, @Info1, @Info2, @Info3);
+      if FileTimeToSystemTime(Info3, SysTimeStruct) then
+      begin
+        result := SystemTimeToDateTime(SysTimeStruct) - Bias;
+      end;
+    finally
+      FileClose(h);
     end;
-    h := FileOpen(FileName, fmOpenRead or fmShareDenyNone);
-    if h > 0 then
-    begin
-        try
-            if GetTimeZoneInformation(TimeZoneInfo) <> $FFFFFFFF then
-            begin
-                Bias := TimeZoneInfo.Bias / 1440;
-            end; // 60x24
-            GetFileTime(h, @Info1, @Info2, @Info3);
-            if FileTimeToSystemTime(Info3, SysTimeStruct) then
-            begin
-                result := SystemTimeToDateTime(SysTimeStruct) - Bias;
-            end;
-        finally
-            FileClose(h);
-        end;
-    end;
+  end;
 end;
 
 procedure savepos(Control : TControl);
 var
-    ini : Tinifile;
+  ini : Tinifile;
 begin
-    ini := TIniFile.Create(AppPath + 'settings\windows.ini');
-    ini.WriteInteger(Control.ClassName, 'top', Control.Top);
-    ini.WriteInteger(Control.ClassName, 'left', Control.Left);
-    ini.WriteInteger(Control.ClassName, 'width', Control.Width);
-    ini.WriteInteger(Control.ClassName, 'height', Control.Height);
-    ini.Destroy;
+  ini := TIniFile.Create(AppPath + 'settings\windows.ini');
+  ini.WriteInteger(Control.ClassName, 'top', Control.Top);
+  ini.WriteInteger(Control.ClassName, 'left', Control.Left);
+  ini.WriteInteger(Control.ClassName, 'width', Control.Width);
+  ini.WriteInteger(Control.ClassName, 'height', Control.Height);
+  ini.Destroy;
 end;
 
 procedure loadpos(Control : TControl);
 var
-    ini : Tinifile;
+  ini : Tinifile;
 begin
-    if not FileExists(AppPath + 'settings\windows.ini') then
-    begin
-        exit;
-    end;
-    ini := TIniFile.Create(AppPath + 'settings\windows.ini');
-    if not ini.SectionExists(Control.ClassName) then
-    begin
-        ini.Destroy;
-        exit;
-    end;
-    if (ini.ReadInteger(Control.ClassName, 'width', control.Width) -
-        ini.ReadInteger(Control.ClassName, 'left', control.Left) >= screen.WorkAreaWidth) and
-        (ini.ReadInteger(Control.ClassName, 'height', control.height) -
-        ini.ReadInteger(Control.ClassName, 'top', control.Top) >= Screen.WorkAreaHeight) then
-    begin
+  if not FileExists(AppPath + 'settings\windows.ini') then
+  begin
+    exit;
+  end;
+  ini := TIniFile.Create(AppPath + 'settings\windows.ini');
+  if not ini.SectionExists(Control.ClassName) then
+  begin
+    ini.Destroy;
+    exit;
+  end;
+  if (ini.ReadInteger(Control.ClassName, 'width', control.Width) -
+    ini.ReadInteger(Control.ClassName, 'left', control.Left) >= screen.WorkAreaWidth) and
+    (ini.ReadInteger(Control.ClassName, 'height', control.height) -
+    ini.ReadInteger(Control.ClassName, 'top', control.Top) >= Screen.WorkAreaHeight) then
+  begin
     //форма была максимизирована...
     //не загружаем
-        if TForm(Control).Visible then
-        begin
-            ShowWindow(TForm(Control).Handle, SW_MAXIMIZE);
-        end
-        else
-        begin
-            ShowWindow(TForm(Control).Handle, SW_MAXIMIZE);
-            ShowWindow(TForm(Control).Handle, SW_HIDE);
-        end;
+    if TForm(Control).Visible then
+    begin
+      ShowWindow(TForm(Control).Handle, SW_MAXIMIZE);
     end
     else
     begin
-        control.Top := ini.ReadInteger(Control.ClassName, 'top', control.Top);
-        control.Left := ini.ReadInteger(Control.ClassName, 'left', control.Left);
-        control.Width := ini.ReadInteger(Control.ClassName, 'width', control.Width);
-        control.height := ini.ReadInteger(Control.ClassName, 'height', control.height);
+      ShowWindow(TForm(Control).Handle, SW_MAXIMIZE);
+      ShowWindow(TForm(Control).Handle, SW_HIDE);
     end;
-    ini.Destroy;
+  end
+  else
+  begin
+    control.Top := ini.ReadInteger(Control.ClassName, 'top', control.Top);
+    control.Left := ini.ReadInteger(Control.ClassName, 'left', control.Left);
+    control.Width := ini.ReadInteger(Control.ClassName, 'width', control.Width);
+    control.height := ini.ReadInteger(Control.ClassName, 'height', control.height);
+  end;
+  ini.Destroy;
 end;
 
 procedure deltemps;
 var
-    SearchRec : TSearchRec;
-    Mask : string;
+  SearchRec : TSearchRec;
+  Mask : string;
 begin
-    Mask := AppPath + '\*.temp';
-    if FindFirst(Mask, faAnyFile, SearchRec) = 0 then
-    begin
-        repeat
-            if (SearchRec.Attr and faDirectory) <> faDirectory then
-            begin
-                DeleteFile(pchar(AppPath + '\' + SearchRec.Name));
-            end;
-        until FindNext(SearchRec) <> 0;
-        SysUtils.FindClose(SearchRec);
-    end;
+  Mask := AppPath + '\*.temp';
+  if FindFirst(Mask, faAnyFile, SearchRec) = 0 then
+  begin
+    repeat
+      if (SearchRec.Attr and faDirectory) <> faDirectory then
+      begin
+        DeleteFile(pchar(AppPath + '\' + SearchRec.Name));
+      end;
+    until FindNext(SearchRec) <> 0;
+    SysUtils.FindClose(SearchRec);
+  end;
 end;
 
 function DataPckToStrPck(var pck) : string; stdcall;
 var
-    tpck : packed record
-        size : word;
-        id : byte;
-    end
-    absolute pck;
+  tpck : packed record
+    size : word;
+    id : byte;
+  end
+  absolute pck;
 begin
-    SetLength(Result, tpck.size - 2);
-    Move(tpck.id, Result[1], Length(Result));
+  SetLength(Result, tpck.size - 2);
+  Move(tpck.id, Result[1], Length(Result));
 end;
 
 procedure Reload;
 begin
-    if getfuncini <> nil then
-    begin
-        getfuncini.free;
-    end;
-    getfuncini := TMemIniFile.Create(AppPath + 'settings\get.ini');
+  if getfuncini <> nil then
+  begin
+    getfuncini.free;
+  end;
+  getfuncini := TMemIniFile.Create(AppPath + 'settings\get.ini');
   // для Lineage II
-    SysMsgIdList.Clear;
-    AugmentList.Clear;
-    SkillList.Clear;
-    ClassIdList.Clear;
-    NpcIdList.Clear;
-    ItemsList.Clear;
+  SysMsgIdList.Clear;
+  AugmentList.Clear;
+  SkillList.Clear;
+  ClassIdList.Clear;
+  NpcIdList.Clear;
+  ItemsList.Clear;
   // для Айон
-    SysMsgIdListAion.Clear;
-    SkillListAion.Clear;
-    ClassIdListAion.Clear;
-    ClientStringsAion.Clear;
-    ItemsListAion.Clear;
+  SysMsgIdListAion.Clear;
+  SkillListAion.Clear;
+  ClassIdListAion.Clear;
+  ClientStringsAion.Clear;
+  ItemsListAion.Clear;
   //загружаем только нужные файлы
-    if ((GlobalProtocolVersion < CHRONICLE4)) then // для Айон 2.1 - 2.7
-    begin  //для Айон
-        if fMain.lang.Language = 'Eng' then
-        begin   //английские версии
-            SysMsgIdListAion.LoadFromFile(AppPath + 'settings\en\SysMsgidAion.ini');
-            ItemsListAion.LoadFromFile(AppPath + 'settings\en\ItemsIdAion.ini');
-            ClassIdListAion.LoadFromFile(AppPath + 'settings\en\classidAion.ini');
-            SkillListAion.LoadFromFile(AppPath + 'settings\en\SkillsIdAion.ini');
-            ClientStringsAion.LoadFromFile(AppPath + 'settings\en\ClientStringsAion.ini');
-        end
-        else
-        begin   //русские версии
-            SysMsgIdListAion.LoadFromFile(AppPath + 'settings\ru\SysMsgidAion.ini');
-            ItemsListAion.LoadFromFile(AppPath + 'settings\ru\ItemsIdAion.ini');
-            ClassIdListAion.LoadFromFile(AppPath + 'settings\ru\classidAion.ini');
-            SkillListAion.LoadFromFile(AppPath + 'settings\ru\SkillsIdAion.ini');
-            ClientStringsAion.LoadFromFile(AppPath + 'settings\ru\ClientStringsAion.ini');
-        end;
+  if ((GlobalProtocolVersion < CHRONICLE4)) then // для Айон 2.1 - 2.7
+  begin  //для Айон
+    if fMain.lang.Language = 'Eng' then
+    begin   //английские версии
+      SysMsgIdListAion.LoadFromFile(AppPath + 'settings\en\SysMsgidAion.ini');
+      ItemsListAion.LoadFromFile(AppPath + 'settings\en\ItemsIdAion.ini');
+      ClassIdListAion.LoadFromFile(AppPath + 'settings\en\classidAion.ini');
+      SkillListAion.LoadFromFile(AppPath + 'settings\en\SkillsIdAion.ini');
+      ClientStringsAion.LoadFromFile(AppPath + 'settings\en\ClientStringsAion.ini');
     end
-    else  //для Lineage II
-    begin
-        if fMain.lang.Language = 'Eng' then
-        begin //английские версии
-            SysMsgIdList.LoadFromFile(AppPath + 'settings\en\sysmsgid.ini');
-            ItemsList.LoadFromFile(AppPath + 'settings\en\itemsid.ini');
-            NpcIdList.LoadFromFile(AppPath + 'settings\en\npcsid.ini');
-            ClassIdList.LoadFromFile(AppPath + 'settings\en\classid.ini');
-            SkillList.LoadFromFile(AppPath + 'settings\en\skillsid.ini');
-            AugmentList.LoadFromFile(AppPath + 'settings\en\augmentsid.ini');
-        end
-        else  //русские версии
-        begin
-            SysMsgIdList.LoadFromFile(AppPath + 'settings\ru\sysmsgid.ini');
-            ItemsList.LoadFromFile(AppPath + 'settings\ru\itemsid.ini');
-            NpcIdList.LoadFromFile(AppPath + 'settings\ru\npcsid.ini');
-            ClassIdList.LoadFromFile(AppPath + 'settings\ru\classid.ini');
-            SkillList.LoadFromFile(AppPath + 'settings\ru\skillsid.ini');
-            AugmentList.LoadFromFile(AppPath + 'settings\ru\augmentsid.ini');
-        end;
+    else
+    begin   //русские версии
+      SysMsgIdListAion.LoadFromFile(AppPath + 'settings\ru\SysMsgidAion.ini');
+      ItemsListAion.LoadFromFile(AppPath + 'settings\ru\ItemsIdAion.ini');
+      ClassIdListAion.LoadFromFile(AppPath + 'settings\ru\classidAion.ini');
+      SkillListAion.LoadFromFile(AppPath + 'settings\ru\SkillsIdAion.ini');
+      ClientStringsAion.LoadFromFile(AppPath + 'settings\ru\ClientStringsAion.ini');
     end;
+  end
+  else  //для Lineage II
+  begin
+    if fMain.lang.Language = 'Eng' then
+    begin //английские версии
+      SysMsgIdList.LoadFromFile(AppPath + 'settings\en\sysmsgid.ini');
+      ItemsList.LoadFromFile(AppPath + 'settings\en\itemsid.ini');
+      NpcIdList.LoadFromFile(AppPath + 'settings\en\npcsid.ini');
+      ClassIdList.LoadFromFile(AppPath + 'settings\en\classid.ini');
+      SkillList.LoadFromFile(AppPath + 'settings\en\skillsid.ini');
+      AugmentList.LoadFromFile(AppPath + 'settings\en\augmentsid.ini');
+    end
+    else  //русские версии
+    begin
+      SysMsgIdList.LoadFromFile(AppPath + 'settings\ru\sysmsgid.ini');
+      ItemsList.LoadFromFile(AppPath + 'settings\ru\itemsid.ini');
+      NpcIdList.LoadFromFile(AppPath + 'settings\ru\npcsid.ini');
+      ClassIdList.LoadFromFile(AppPath + 'settings\ru\classid.ini');
+      SkillList.LoadFromFile(AppPath + 'settings\ru\skillsid.ini');
+      AugmentList.LoadFromFile(AppPath + 'settings\ru\augmentsid.ini');
+    end;
+  end;
 end;
 
 function TimeStepByteStr : string;
 var
-    TimeStep : TDateTime;
-    TimeStepB : array [0..7] of byte;
+  TimeStep : TDateTime;
+  TimeStepB : array [0..7] of byte;
 begin
-    TimeStep := Time;
-    Move(TimeStep, TimeStepB, 8);
-    result := ByteArrayToHex(TimeStepB, 8);
+  TimeStep := Time;
+  Move(TimeStep, TimeStepB, 8);
+  result := ByteArrayToHex(TimeStepB, 8);
 end;
 
 function GetNamePacket(s : string) : string;
 var
-    ik : word;
+  ik : word;
 begin
   // ищем конец имени пакета
-    ik := Pos(':', s);
-    if ik = 0 then
-    begin
-        Result := s;
-    end
-    else
-    begin
-        Result := copy(s, 1, ik - 1);
-    end;
+  ik := Pos(':', s);
+  if ik = 0 then
+  begin
+    Result := s;
+  end
+  else
+  begin
+    Result := copy(s, 1, ik - 1);
+  end;
 end;
 
 function StringToWideString(const s : ansistring; codePage : word) : widestring;
 var
-    l : integer;
+  l : integer;
 begin
-    if s = '' then
+  if s = '' then
+  begin
+    Result := '';
+    exit;
+  end
+  else
+  begin
+    l := MultiByteToWideChar(codePage, MB_PRECOMPOSED, pchar(@s[1]), -1, nil, 0);
+    if l > 1 then
     begin
-        Result := '';
-        exit;
-    end
-    else
-    begin
-        l := MultiByteToWideChar(codePage, MB_PRECOMPOSED, pchar(@s[1]), -1, nil, 0);
-        if l > 1 then
-        begin
-            SetLength(Result, l - 1);
-            MultiByteToWideChar(CodePage, MB_PRECOMPOSED, pchar(@s[1]), -1, PWideChar(@Result[1]), l - 1);
-        end;
+      SetLength(Result, l - 1);
+      MultiByteToWideChar(CodePage, MB_PRECOMPOSED, pchar(@s[1]), -1, PWideChar(@Result[1]), l - 1);
     end;
+  end;
 end;
 
 function StringToHex(str1, Separator : string) : string;
 var
-    buf : string;
-    i : integer;
+  buf : string;
+  i : integer;
 begin
-    buf := '';
-    for i := 1 to Length(str1) do
-    begin
-        buf := buf + IntToHex(byte(str1[i]), 2) + Separator;
-    end;
-    Result := buf;
+  buf := '';
+  for i := 1 to Length(str1) do
+  begin
+    buf := buf + IntToHex(byte(str1[i]), 2) + Separator;
+  end;
+  Result := buf;
 end;
 
 function SymbolEntersCount(s : string) : string;
 var
-    i : integer;
+  i : integer;
 begin
-    Result := '';
-    for i := 1 to Length(s) do
+  Result := '';
+  for i := 1 to Length(s) do
+  begin
+    if not (s[i] in [' ', #10, #13]) then
     begin
-        if not (s[i] in [' ', #10, #13]) then
-        begin
-            Result := Result + s[i];
-        end;
+      Result := Result + s[i];
     end;
+  end;
 end;
 
 //превращаем HEX строку символов в набор цифр
 function HexToString(Hex : string) : string;
 var
-    buf : string;
-    bt : byte;
-    i : integer;
+  buf : string;
+  bt : byte;
+  i : integer;
 begin
-    buf := '';
-    Hex := SymbolEntersCount(UpperCase(Hex));
-    for i := 0 to (Length(Hex) div 2) - 1 do
+  buf := '';
+  Hex := SymbolEntersCount(UpperCase(Hex));
+  for i := 0 to (Length(Hex) div 2) - 1 do
+  begin
+    bt := 0;
+    if (byte(hex[i * 2 + 1]) > $2F) and (byte(hex[i * 2 + 1]) < $3A) then
     begin
-        bt := 0;
-        if (byte(hex[i * 2 + 1]) > $2F) and (byte(hex[i * 2 + 1]) < $3A) then
-        begin
-            bt := byte(hex[i * 2 + 1]) - $30;
-        end;
-        if (byte(hex[i * 2 + 1]) > $40) and (byte(hex[i * 2 + 1]) < $47) then
-        begin
-            bt := byte(hex[i * 2 + 1]) - $37;
-        end;
-        if (byte(hex[i * 2 + 2]) > $2F) and (byte(hex[i * 2 + 2]) < $3A) then
-        begin
-            bt := bt * 16 + byte(hex[i * 2 + 2]) - $30;
-        end;
-        if (byte(hex[i * 2 + 2]) > $40) and (byte(hex[i * 2 + 2]) < $47) then
-        begin
-            bt := bt * 16 + byte(hex[i * 2 + 2]) - $37;
-        end;
-        buf := buf + char(bt);
+      bt := byte(hex[i * 2 + 1]) - $30;
     end;
-    HexToString := buf;
+    if (byte(hex[i * 2 + 1]) > $40) and (byte(hex[i * 2 + 1]) < $47) then
+    begin
+      bt := byte(hex[i * 2 + 1]) - $37;
+    end;
+    if (byte(hex[i * 2 + 2]) > $2F) and (byte(hex[i * 2 + 2]) < $3A) then
+    begin
+      bt := bt * 16 + byte(hex[i * 2 + 2]) - $30;
+    end;
+    if (byte(hex[i * 2 + 2]) > $40) and (byte(hex[i * 2 + 2]) < $47) then
+    begin
+      bt := bt * 16 + byte(hex[i * 2 + 2]) - $37;
+    end;
+    buf := buf + char(bt);
+  end;
+  HexToString := buf;
 end;
 
 procedure GetProcessList(var sl : TStrings);
 var
-    pe : TProcessEntry32;
-    ph, snap : THandle; //дескрипторы процесса и снимка
-    mh : hmodule; //дескриптор модуля
-    procs : array[0..$FFF] of dword; //массив для хранения дескрипторов процессов
-    count, cm : cardinal; //количество процессов
-    i : integer;
-    ModName : array[0..max_path] of char; //имя модуля
-    tmp : string;
+  pe : TProcessEntry32;
+  ph, snap : THandle; //дескрипторы процесса и снимка
+  mh : hmodule; //дескриптор модуля
+  procs : array[0..$FFF] of dword; //массив для хранения дескрипторов процессов
+  count, cm : cardinal; //количество процессов
+  i : integer;
+  ModName : array[0..max_path] of char; //имя модуля
+  tmp : string;
 begin
-    sl.Clear;
-    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    begin //если это Win9x
-        snap := CreateToolhelp32Snapshot(th32cs_snapprocess, 0);
-        if integer(snap) = -1 then
-        begin
-            exit;
-        end
-        else
-        begin
-            pe.dwSize := sizeof(pe);
-            if Process32First(snap, pe) then
-            begin
-                repeat
-                    sl.Add(string(pe.szExeFile));
-                until not Process32Next(snap, pe);
-            end;
-        end;
+  sl.Clear;
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+  begin //если это Win9x
+    snap := CreateToolhelp32Snapshot(th32cs_snapprocess, 0);
+    if integer(snap) = -1 then
+    begin
+      exit;
     end
     else
-    begin //Если WinNT/2000/XP
-        if not EnumProcesses(@procs, sizeof(procs), count) then
-        begin
-            exit;
-        end;
-        try
-            for i := 0 to (count div 4) - 1 do
-            begin
-                if procs[i] <> 4 then
-                begin
-                    EnablePrivilegeEx(INVALID_HANDLE_VALUE, 'SeDebugPrivilege');
-                    ph := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, procs[i]);
-                    if ph > 0 then
-                    begin
-                        EnumProcessModules(ph, @mh, 4, cm);
-                        GetModuleFileNameEx(ph, mh, ModName, sizeof(ModName));
-                        tmp := LowerCase(ExtractFileName(string(ModName)));
-                        sl.Add(IntToStr(procs[i]) + '=' + tmp);
-                        CloseHandle(ph);
-                    end;
-                end;
-            end;
-        except
-
-        end;
+    begin
+      pe.dwSize := sizeof(pe);
+      if Process32First(snap, pe) then
+      begin
+        repeat
+          sl.Add(string(pe.szExeFile));
+        until not Process32Next(snap, pe);
+      end;
     end;
+  end
+  else
+  begin //Если WinNT/2000/XP
+    if not EnumProcesses(@procs, sizeof(procs), count) then
+    begin
+      exit;
+    end;
+    try
+      for i := 0 to (count div 4) - 1 do
+      begin
+        if procs[i] <> 4 then
+        begin
+          EnablePrivilegeEx(INVALID_HANDLE_VALUE, 'SeDebugPrivilege');
+          ph := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, procs[i]);
+          if ph > 0 then
+          begin
+            EnumProcessModules(ph, @mh, 4, cm);
+            GetModuleFileNameEx(ph, mh, ModName, sizeof(ModName));
+            tmp := LowerCase(ExtractFileName(string(ModName)));
+            sl.Add(IntToStr(procs[i]) + '=' + tmp);
+            CloseHandle(ph);
+          end;
+        end;
+      end;
+    except
+
+    end;
+  end;
 end;
 
 procedure BalloonHint(title, msg : string);
 begin
   //+++
-    if not isDestroying then
-    begin
-        SendMessage(fMainReplacer.Handle, WM_BalloonHint, integer(msg), integer(title));
-    end;
+  if not isDestroying then
+  begin
+    SendMessage(fMainReplacer.Handle, WM_BalloonHint, integer(msg), integer(title));
+  end;
 end;
 
 procedure AddToLog(msg : string);
@@ -512,273 +512,273 @@ begin
 //      if fLog.IsExists then
 //        SendMessage(fLog.Handle, WM_AddLog, integer(msg), 0);
   //+++
-    if (assigned(fLog) and (not isDestroying) and (fLog.IsExists)) then
-    begin
-        SendMessage(fLog.Handle, WM_AddLog, integer(msg), 0);
-    end;
+  if (assigned(fLog) and (not isDestroying) and (fLog.IsExists)) then
+  begin
+    SendMessage(fLog.Handle, WM_AddLog, integer(msg), 0);
+  end;
 end;
 
 function LoadLibraryInject(const name : string) : boolean;
 var
-    sFile, Size : THandle;
-    ee : OFSTRUCT;
-    tmp : pchar;
+  sFile, Size : THandle;
+  ee : OFSTRUCT;
+  tmp : pchar;
 begin
-    if pInjectDll <> nil then
-    begin
-        FreeMem(pInjectDll);
-        AddToLog(format(rsUnLoadDllSuccessfully, [name]));
-    end;
-    tmp := pchar(name);
-    if fileExists(tmp) then
-    begin
-        sFile := OpenFile(tmp, ee, OF_READ);
-        Result := true;
-        AddToLog(format(rsLoadDllSuccessfully, [name]));
-        Size := GetFileSize(sFile, nil);
-        GetMem(pInjectDll, Size);
-        ReadFile(sFile, pInjectDll^, Size, Size, nil);
-        CloseHandle(sFile);
-    end
-    else
-    begin
-        result := false;
-        AddToLog(format(rsLoadDllUnSuccessful, [name]));
-    end;
+  if pInjectDll <> nil then
+  begin
+    FreeMem(pInjectDll);
+    AddToLog(format(rsUnLoadDllSuccessfully, [name]));
+  end;
+  tmp := pchar(name);
+  if fileExists(tmp) then
+  begin
+    sFile := OpenFile(tmp, ee, OF_READ);
+    Result := true;
+    AddToLog(format(rsLoadDllSuccessfully, [name]));
+    Size := GetFileSize(sFile, nil);
+    GetMem(pInjectDll, Size);
+    ReadFile(sFile, pInjectDll^, Size, Size, nil);
+    CloseHandle(sFile);
+  end
+  else
+  begin
+    result := false;
+    AddToLog(format(rsLoadDllUnSuccessful, [name]));
+  end;
 end;
 
 function LoadLibraryXor(const name : string) : boolean;
 begin
   // загружаем XOR dll
-    if hXorLib <> 0 then
+  if hXorLib <> 0 then
+  begin
+    FreeLibrary(hXorLib);
+    AddToLog(format(rsUnLoadDllSuccessfully, [name]));
+  end;
+  hXorLib := LoadLibrary(pchar(name));
+  if hXorLib > 0 then
+  begin
+    AddToLog(format(rsLoadDllSuccessfully, [name]));
+    result := true;
+    @CreateXorIn := GetProcAddress(hXorLib, 'CreateCoding');
+    @CreateXorOut := GetProcAddress(hXorLib, 'CreateCodingOut');
+    if @CreateXorOut = nil then
     begin
-        FreeLibrary(hXorLib);
-        AddToLog(format(rsUnLoadDllSuccessfully, [name]));
+      CreateXorOut := CreateXorIn;
     end;
-    hXorLib := LoadLibrary(pchar(name));
-    if hXorLib > 0 then
-    begin
-        AddToLog(format(rsLoadDllSuccessfully, [name]));
-        result := true;
-        @CreateXorIn := GetProcAddress(hXorLib, 'CreateCoding');
-        @CreateXorOut := GetProcAddress(hXorLib, 'CreateCodingOut');
-        if @CreateXorOut = nil then
-        begin
-            CreateXorOut := CreateXorIn;
-        end;
-    end
-    else
-    begin
-        Result := false;
-        AddToLog(format(rsLoadDllUnSuccessful, [name]));
-    end;
+  end
+  else
+  begin
+    Result := false;
+    AddToLog(format(rsLoadDllUnSuccessful, [name]));
+  end;
 end;
 
 function WideStringToString(const ws : widestring; codePage : word) : ansistring;
 var
-    l : integer;
+  l : integer;
 begin
-    if ws = '' then
+  if ws = '' then
+  begin
+    Result := '';
+    exit;
+  end
+  else
+  begin
+    codePage := 0;
+    l := WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, nil, 0, nil, nil);
+    if l > 1 then
     begin
-        Result := '';
-        exit;
-    end
-    else
-    begin
-        codePage := 0;
-        l := WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, nil, 0, nil, nil);
-        if l > 1 then
-        begin
-            SetLength(Result, l - 1);
-            WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, @Result[1], l - 1, nil, nil);
-        end;
+      SetLength(Result, l - 1);
+      WideCharToMultiByte(codePage, WC_COMPOSITECHECK or WC_DISCARDNS or WC_SEPCHARS or WC_DEFAULTCHAR, @ws[1], -1, @Result[1], l - 1, nil, nil);
     end;
+  end;
 end;
 
 function AddDateTime : string;
 begin
-    result := FormatDateTime('dd.mm.yyy hh.nn.ss', now);
+  result := FormatDateTime('dd.mm.yyy hh.nn.ss', now);
 end;
 
 function AddDateTimeNormal : string;
 begin
-    result := FormatDateTime('dd.mm.yyy hh:nn:ss', now);
+  result := FormatDateTime('dd.mm.yyy hh:nn:ss', now);
 end;
 
 function ByteArrayToHex(str1 : array of byte; size : word) : string;
 var
-    buf : string;
-    i : integer;
+  buf : string;
+  i : integer;
 begin
-    buf := '';
-    for i := 0 to size - 1 do
-    begin
-        buf := buf + IntToHex(str1[i], 2);
-    end;
-    Result := buf;
+  buf := '';
+  for i := 0 to size - 1 do
+  begin
+    buf := buf + IntToHex(str1[i], 2);
+  end;
+  Result := buf;
 end;
 
 procedure FillVersion_a; //Попахивает извращениями ? ... я знаю!
 var
-    ver : string;
+  ver : string;
 begin
-    ver := getversion;
-    l2pxversion_array[0] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
-    delete(ver, 1, pos('.', ver));
-    l2pxversion_array[1] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
-    delete(ver, 1, pos('.', ver));
-    l2pxversion_array[2] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
-    delete(ver, 1, pos('.', ver));
-    l2pxversion_array[3] := StrToIntDef(ver, 0);
+  ver := getversion;
+  l2pxversion_array[0] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
+  delete(ver, 1, pos('.', ver));
+  l2pxversion_array[1] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
+  delete(ver, 1, pos('.', ver));
+  l2pxversion_array[2] := StrToIntDef(copy(ver, 1, pos('.', ver) - 1), 0);
+  delete(ver, 1, pos('.', ver));
+  l2pxversion_array[3] := StrToIntDef(ver, 0);
 end;
 
 function getversion : string;
 type
-    LANGANDCODEPAGE = record
-        wLanguage : word;
-        wCodePage : word;
-    end;
+  LANGANDCODEPAGE = record
+    wLanguage : word;
+    wCodePage : word;
+  end;
 var
-    dwHandle, cbTranslate, lenBuf : cardinal;
-    sizeVers : DWord;
-    lpData, langData : Pointer;
-    lpTranslate : ^LANGANDCODEPAGE;
-    i : integer;
-    s : string;
-    buf : pchar;
+  dwHandle, cbTranslate, lenBuf : cardinal;
+  sizeVers : DWord;
+  lpData, langData : Pointer;
+  lpTranslate : ^LANGANDCODEPAGE;
+  i : integer;
+  s : string;
+  buf : pchar;
 begin
-    result := '';
-    sizeVers := GetFileVersionInfoSize(pchar(ExtractFileName(ParamStr(0))), dwHandle);
-    if sizeVers = 0 then
+  result := '';
+  sizeVers := GetFileVersionInfoSize(pchar(ExtractFileName(ParamStr(0))), dwHandle);
+  if sizeVers = 0 then
+  begin
+    exit;
+  end;
+  GetMem(lpData, sizeVers);
+  try
+    ZeroMemory(lpData, sizeVers);
+    GetFileVersionInfo(pchar(ExtractFileName(ParamStr(0))), 0, sizeVers, lpData);
+    if not VerQueryValue(lpData, '\VarFileInfo\Translation', langData, cbTranslate) then
     begin
-        exit;
+      exit;
     end;
-    GetMem(lpData, sizeVers);
-    try
-        ZeroMemory(lpData, sizeVers);
-        GetFileVersionInfo(pchar(ExtractFileName(ParamStr(0))), 0, sizeVers, lpData);
-        if not VerQueryValue(lpData, '\VarFileInfo\Translation', langData, cbTranslate) then
-        begin
-            exit;
-        end;
-        for i := 0 to (cbTranslate div sizeof(LANGANDCODEPAGE)) do
-        begin
-            lpTranslate := Pointer(integer(langData) + sizeof(LANGANDCODEPAGE) * i);
-            s := Format('\StringFileInfo\%.4x%.4x\FileVersion', [lpTranslate^.wLanguage, lpTranslate^.wCodePage]);
-            if VerQueryValue(lpData, pchar(s), Pointer(buf), lenBuf) then
-            begin
-                Result := buf;
-                break;
-            end;
-        end;
-    finally
-        FreeMem(lpData);
+    for i := 0 to (cbTranslate div sizeof(LANGANDCODEPAGE)) do
+    begin
+      lpTranslate := Pointer(integer(langData) + sizeof(LANGANDCODEPAGE) * i);
+      s := Format('\StringFileInfo\%.4x%.4x\FileVersion', [lpTranslate^.wLanguage, lpTranslate^.wCodePage]);
+      if VerQueryValue(lpData, pchar(s), Pointer(buf), lenBuf) then
+      begin
+        Result := buf;
+        break;
+      end;
     end;
+  finally
+    FreeMem(lpData);
+  end;
 end;
 
 procedure GetPFandPL(var pf : TStringList; var pl : TListView; FromServer : boolean);
 begin
-    if FromServer then
-    begin
-        pf := PacketsFromS;
-        pl := fPacketFilter.ListView1;
-    end
-    else
-    begin
-        pf := PacketsFromC;
-        pl := fPacketFilter.ListView2;
-    end;
+  if FromServer then
+  begin
+    pf := PacketsFromS;
+    pl := fPacketFilter.ListView1;
+  end
+  else
+  begin
+    pf := PacketsFromC;
+    pl := fPacketFilter.ListView2;
+  end;
 end;
 
 function PacketIdToHex(id, subid, sub2id, size : integer) : string;
 begin
-    result := '';
-    if size > 0 then
-    begin
-        result := result + inttohex(id, 2);
-    end;
-    if size > 1 then
-    begin
-        result := result + inttohex(subid and $ff, 2);
-    end;
-    if size > 2 then
-    begin
-        result := result + inttohex(subid shr 8, 2);
-    end;
-    if size > 3 then
-    begin
-        result := result + inttohex(sub2id and $ff, 2);
-    end;
-    if size > 4 then
-    begin
-        result := result + inttohex(sub2id shr 8, 2);
-    end;
+  result := '';
+  if size > 0 then
+  begin
+    result := result + inttohex(id, 2);
+  end;
+  if size > 1 then
+  begin
+    result := result + inttohex(subid and $ff, 2);
+  end;
+  if size > 2 then
+  begin
+    result := result + inttohex(subid shr 8, 2);
+  end;
+  if size > 3 then
+  begin
+    result := result + inttohex(sub2id and $ff, 2);
+  end;
+  if size > 4 then
+  begin
+    result := result + inttohex(sub2id shr 8, 2);
+  end;
 end;
 
 function GetPacketName(var id : byte; var subid, sub2id : word; FromServer : boolean; var pname : string; var isshow : boolean; var hexid : string) : boolean;
 var
-    i : integer;
-    pl : TListView;
-    pf : TStringList;
+  i : integer;
+  pl : TListView;
+  pf : TStringList;
 begin
-    result := false; //во всех unknown убрал эту строчку
-    isshow := true;
-    GetPFandPL(pf, pl, FromServer);
-    hexid := PacketIdToHex(id, subid, sub2id, 1);
+  result := false; //во всех unknown убрал эту строчку
+  isshow := true;
+  GetPFandPL(pf, pl, FromServer);
+  hexid := PacketIdToHex(id, subid, sub2id, 1);
+  i := pf.IndexOfName(hexid);
+  if i = -1 then
+  begin
+    hexid := PacketIdToHex(id, subid, sub2id, 2);
     i := pf.IndexOfName(hexid);
-    if i = -1 then
-    begin
-        hexid := PacketIdToHex(id, subid, sub2id, 2);
-        i := pf.IndexOfName(hexid);
-    end;
-    if i = -1 then
-    begin
-        hexid := PacketIdToHex(id, subid, sub2id, 3);
-        i := pf.IndexOfName(hexid);
-    end;
-    if i = -1 then
-    begin
-        hexid := PacketIdToHex(id, subid, sub2id, 4);
-        i := pf.IndexOfName(hexid);
-    end;
-    if i = -1 then
-    begin
-        hexid := PacketIdToHex(id, subid, sub2id, 5);
-        i := pf.IndexOfName(hexid);
-    end;
-    if i = -1 then
-    begin
-        pname := 'Unknown' + PacketIdToHex(id, subid, sub2id, 1);
-    end
-    else
-    begin
-        pname := pl.Items.Item[i].SubItems[0];
-        isshow := pl.Items.Item[i].Checked;
-        result := true;
-    end;
+  end;
+  if i = -1 then
+  begin
+    hexid := PacketIdToHex(id, subid, sub2id, 3);
+    i := pf.IndexOfName(hexid);
+  end;
+  if i = -1 then
+  begin
+    hexid := PacketIdToHex(id, subid, sub2id, 4);
+    i := pf.IndexOfName(hexid);
+  end;
+  if i = -1 then
+  begin
+    hexid := PacketIdToHex(id, subid, sub2id, 5);
+    i := pf.IndexOfName(hexid);
+  end;
+  if i = -1 then
+  begin
+    pname := 'Unknown' + PacketIdToHex(id, subid, sub2id, 1);
+  end
+  else
+  begin
+    pname := pl.Items.Item[i].SubItems[0];
+    isshow := pl.Items.Item[i].Checked;
+    result := true;
+  end;
 end;
 
 function get_ws_length(s : string; index : integer) : integer;
 var
-    end_index : integer;
+  end_index : integer;
 begin
-    end_index := index;
-    while
-        (Length(s) - (end_index - index) >= 2) and not ((s[end_index] = #0) and (s[end_index + 1] = #0)) do
-    begin
-        Inc(end_index, 2);
-    end;
-    result := end_index - index;
+  end_index := index;
+  while
+    (Length(s) - (end_index - index) >= 2) and not ((s[end_index] = #0) and (s[end_index + 1] = #0)) do
+  begin
+    Inc(end_index, 2);
+  end;
+  result := end_index - index;
 end;
 
 function text2hexstring(s : string) : string;
 var
-    i : integer;
+  i : integer;
 begin
-    for i := 1 to Length(s) do
-    begin
-        result := result + inttohex(ord(s[i]), 2);
-    end;
+  for i := 1 to Length(s) do
+  begin
+    result := result + inttohex(ord(s[i]), 2);
+  end;
 end;
 
 

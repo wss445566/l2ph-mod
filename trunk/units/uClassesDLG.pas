@@ -3,57 +3,57 @@ unit uClassesDLG;
 interface
 
 uses
-    Windows,
-    Messages,
-    SysUtils,
-    Variants,
-    Classes,
-    Graphics,
-    Controls,
-    Forms,
-    Dialogs,
-    ExtCtrls,
-    fs_tree;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  ExtCtrls,
+  fs_tree;
 
 type
-    TfClassesDLG = class (TForm)
-        fsTree1 : TfsTree;
-        procedure FormCreate(Sender : TObject);
-        procedure FormDestroy(Sender : TObject);
-    protected
-        procedure CreateParams(var Params : TCreateParams); override;
-    private
+  TfClassesDLG = class (TForm)
+    fsTree1 : TfsTree;
+    procedure FormCreate(Sender : TObject);
+    procedure FormDestroy(Sender : TObject);
+  protected
+    procedure CreateParams(var Params : TCreateParams); override;
+  private
     { Private declarations }
 
-    public
+  public
 
     { Public declarations }
-    end;
+  end;
 
 var
-    fClassesDLG : TfClassesDLG;
+  fClassesDLG : TfClassesDLG;
 
 implementation
 
 uses
-    uglobalfuncs;
+  uglobalfuncs;
 
 {$R *.dfm}
 
 procedure TfClassesDLG.CreateParams(var Params : TCreateParams);
 begin
-    inherited;
-    Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  inherited;
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
 end;
 
 procedure TfClassesDLG.FormCreate(Sender : TObject);
 begin
-    loadpos(Self);
+  loadpos(Self);
 end;
 
 procedure TfClassesDLG.FormDestroy(Sender : TObject);
 begin
-    savepos(Self);
+  savepos(Self);
 end;
 
 end.
