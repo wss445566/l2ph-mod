@@ -13,7 +13,7 @@
   * 安裝 TsiLang.exe
   * compile FastScript\Source\fs11.dpk
   * install FastScript\Source\dclfs11.dpk
-  * 加入 library search path http://snag.gy/uj4SO.jpg
+  * 加入 library search path http://snag.gy/qyEwg.jpg
   * install LSP\component\LSPControlComponent.dpk
   * install SyntEdit\EControl_Common\Packages\ecComnD11.dpk
   * install SyntEdit\EControl_SyntEdit\Packages\SyntEditDcl11. Dpk
