@@ -1,6 +1,7 @@
 =設定=
   * tortoisesvn 下載及安裝 https://www.youtube.com/watch?v=67stiYwCTI0
   * checkout l2ph-mod source code https://www.youtube.com/watch?v=wTqs2ya35Vw
+  * http://snag.gy/2ngsx.jpg
   * 安裝 delphi 2007 https://www.youtube.com/watch?v=jYYovwiBKps
   * 下載 JCL http://sourceforge.net/projects/jcl/
   * 下載 JVCL http://sourceforge.net/projects/jvcl/
