@@ -7,6 +7,27 @@
   * 下載 FastScript, jwapi2.2a, SyntEdit, TRichView.v11.0 + ScaleRichView.v2.0, TsiLang, TPerlRegEx http://l2phx.pp.ru/arhive/components
   * 安裝 以上 components https://www.youtube.com/watch?v=W_bRwYwb1zU
 
+=安裝 components 詳細=
+  * 運行 jcl\install.bat
+  * 運行 jvcl\install.bat
+  * 安裝 TsiLang.exe
+  * compile FastScript\Source\fs11.dpk
+  * install FastScript\Source\dclfs11.dpk
+  * 加入 library search path http://snag.gy/uj4SO.jpg
+  * install LSP\component\LSPControlComponent.dpk
+  * install SyntEdit\EControl_Common\Packages\ecComnD11.dpk
+  * install SyntEdit\EControl_SyntEdit\Packages\SyntEditDcl11. Dpk
+  * install SyntEdit\EControl_SyntEdit\Packages\SyntEditDB11. dpk
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\1-TRichView\Units\D2007\RVDBPkgD2007.dpk
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\1-TRichView\Units\D2007\RVPkgD2007.dpk 
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\2-RichViewActions\RichViewActionsD2007.dpk
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\3-ScaleRichView\Units\D2007\SRVPkgD2007.dpk 
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\3-ScaleRichView\Units\D2007\DBSRVPkgD2007.dpk 
+  * install TRichView.v11.0 + ScaleRichView.v2.0.D2009\4-SRVControls\SRVControlsD2007.dpk 
+  * 複制 TPerlRegEx\pcrelib.dll 到  windows\system32
+  * install TPerlRegEx\PerlRegExD2007.dpk
+
+
 =下載連結=
   * http://tortoisesvn.net/downloads.html
   * http://sourceforge.net/projects/jcl/
