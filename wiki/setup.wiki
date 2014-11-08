@@ -1,10 +1,11 @@
 =設定=
   * tortoisesvn 下載及安裝 https://www.youtube.com/watch?v=67stiYwCTI0
   * checkout l2ph-mod source code https://www.youtube.com/watch?v=wTqs2ya35Vw
-  * 安裝 delphi 2007 https://www.youtube.com/watch?v=yEsl6k2fTEA
+  * 安裝 delphi 2007 https://www.youtube.com/watch?v=jYYovwiBKps
   * 下載 JCL http://sourceforge.net/projects/jcl/
   * 下載 JVCL http://sourceforge.net/projects/jvcl/
   * 下載 FastScript, jwapi2.2a, SyntEdit, TRichView.v11.0 + ScaleRichView.v2.0, TsiLang, TPerlRegEx http://l2phx.pp.ru/arhive/components
+  * 安裝 以上 components https://www.youtube.com/watch?v=W_bRwYwb1zU
 
 =下載連結=
   * http://tortoisesvn.net/downloads.html
