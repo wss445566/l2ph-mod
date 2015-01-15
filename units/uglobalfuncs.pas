@@ -102,15 +102,8 @@ var
   filterS, filterC : string; //строка фильтров
 
   //протоколы (packets???.ini) поддерживаемых пакетхаком
-type
-  TProtocolVersion = (AION, AION27,
-    CHRONICLE4, CHRONICLE5,
-    INTERLUDE,
-    GRACIA, GRACIAFINAL, GRACIAEPILOGUE,
-    FREYA, HIGHFIVE, GOD, GOD583, GOD603, GODxxx);
-
 var
-  GlobalProtocolVersion : TProtocolVersion = AION;
+  GlobalProtocolVersion : integer = 607;
 
 procedure AddToLog(msg : string); //добавл€ем запись в frmLogForm.log
 procedure BalloonHint(title, msg : string);
@@ -139,6 +132,7 @@ var
   Options, PacketsINI : TMemIniFile;
   GetFuncINI : TMemIniFile;
   wlimit, looplimit : integer;
+  Global2bytesize : integer;
 
 implementation
 
@@ -288,26 +282,6 @@ begin
   ClientStringsAion.Clear;
   ItemsListAion.Clear;
   //загружаем только нужные файлы
-  if ((GlobalProtocolVersion < CHRONICLE4)) then // дл€ јйон 2.1 - 2.7
-  begin  //дл€ јйон
-    if fMain.lang.Language = 'Eng' then
-    begin   //английские версии
-      SysMsgIdListAion.LoadFromFile(AppPath + 'settings\en\SysMsgidAion.ini');
-      ItemsListAion.LoadFromFile(AppPath + 'settings\en\ItemsIdAion.ini');
-      ClassIdListAion.LoadFromFile(AppPath + 'settings\en\classidAion.ini');
-      SkillListAion.LoadFromFile(AppPath + 'settings\en\SkillsIdAion.ini');
-      ClientStringsAion.LoadFromFile(AppPath + 'settings\en\ClientStringsAion.ini');
-    end
-    else
-    begin   //русские версии
-      SysMsgIdListAion.LoadFromFile(AppPath + 'settings\ru\SysMsgidAion.ini');
-      ItemsListAion.LoadFromFile(AppPath + 'settings\ru\ItemsIdAion.ini');
-      ClassIdListAion.LoadFromFile(AppPath + 'settings\ru\classidAion.ini');
-      SkillListAion.LoadFromFile(AppPath + 'settings\ru\SkillsIdAion.ini');
-      ClientStringsAion.LoadFromFile(AppPath + 'settings\ru\ClientStringsAion.ini');
-    end;
-  end
-  else  //дл€ Lineage II
   begin
     if fMain.lang.Language = 'Eng' then
     begin //английские версии

@@ -24,10 +24,8 @@ object fPacketFilter: TfPacketFilter
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 358
     object TabSheet1: TTabSheet
       Caption = #1054#1090' '#1089#1077#1088#1074#1077#1088#1072
-      ExplicitHeight = 330
       object ListView1: TJvListView
         Left = 0
         Top = 0
@@ -56,13 +54,11 @@ object fPacketFilter: TfPacketFilter
           end
           item
           end>
-        ExplicitHeight = 330
       end
     end
     object TabSheet7: TTabSheet
       Caption = #1054#1090' '#1082#1083#1080#1077#1085#1090#1072
       ImageIndex = 1
-      ExplicitHeight = 330
       object ListView2: TJvListView
         Left = 0
         Top = 0
@@ -91,7 +87,6 @@ object fPacketFilter: TfPacketFilter
           end
           item
           end>
-        ExplicitHeight = 330
       end
     end
   end

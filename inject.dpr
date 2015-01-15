@@ -7,7 +7,8 @@ uses
   IniFiles,
   SysUtils,
   advApiHook in 'units\advApiHook.pas',
-  NativeAPI in 'units\NativeAPI.pas';
+  NativeAPI in 'units\NativeAPI.pas',
+  usharedstructs in 'units\usharedstructs.pas';
 
 //(* Исключаем из файла всякую ненужную хрень
 {$SETPEFlAGS IMAGE_FILE_DEBUG_STRIPPED or

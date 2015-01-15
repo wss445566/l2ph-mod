@@ -236,65 +236,7 @@ procedure TfPacketFilter.LoadPacketsIni;
 var
   i : integer;
 begin
-  //для выбора соответствующего packets???.ini
-  case GlobalProtocolVersion of
-    AION :
-    begin
-      LoadPktIni('packetsAion21.ini');
-    end;       //пакеты для AION v 2.1 - 2.6
-    AION27 :
-    begin
-      LoadPktIni('packetsAion27.ini');
-    end;   //пакеты для AION v 2.7 - двух байтные ID
-    CHRONICLE4 :
-    begin
-      LoadPktIni('packetsC4.ini');
-    end;   //пакеты для С4
-    CHRONICLE5 :
-    begin
-      LoadPktIni('packetsC5.ini');
-    end;   //пакеты для C5
-    INTERLUDE :
-    begin
-      LoadPktIni('packetsInterlude.ini');
-    end;        //пакеты для Интерлюдии
-    GRACIA :
-    begin
-      LoadPktIni('packetsGracia.ini');
-    end;              //пакеты для Грация
-    GRACIAFINAL :
-    begin
-      LoadPktIni('packetsGraciaFinal.ini');
-    end;    //пакеты для Грация Финал
-    GRACIAEPILOGUE :
-    begin
-      LoadPktIni('packetsGraciaEpilogue.ini');
-    end;  //пакеты для Грация Эпилог
-    FREYA :
-    begin
-      LoadPktIni('packetsFreya.ini');
-    end;                    //пакеты для Freya
-    HIGHFIVE :
-    begin
-      LoadPktIni('packetsHighFive.ini');
-    end;              //пакеты для High Five
-    GOD :
-    begin
-      LoadPktIni('packetsGOD.ini');
-    end;                        //пакеты для Goddess of Destruction
-    GOD583 :
-    begin
-      LoadPktIni('packetsGOD583.ini');
-    end;
-    GOD603 :
-    begin
-      LoadPktIni('packetsGOD603.ini');
-    end;
-    GODxxx :
-    begin
-      LoadPktIni('packetsGODxxx.ini');
-    end;
-  end;
+  LoadPktIni(inttostr(GlobalProtocolVersion)+'.ini');
 
   filterS := Options.ReadString('Snifer', 'notFS', '');
   filterC := Options.ReadString('Snifer', 'notFC', '');

@@ -47,7 +47,6 @@ type
     Panel3 : TPanel;
     Button1 : TButton;
     Button2 : TButton;
-    rgProtocolVersion : TRadioGroup;
     GroupBox1 : TGroupBox;
     ChkNoDecrypt : TCheckBox;
     ChkChangeParser : TCheckBox;
@@ -108,6 +107,11 @@ type
     Labellooplimit : TLabel;
     Editwlimit : TEdit;
     Editlooplimit : TEdit;
+    GroupBox6: TGroupBox;
+    EditProtocolVersion: TEdit;
+    Edit2bytesize: TEdit;
+    Label9: TLabel;
+    Label10: TLabel;
     procedure ChkKamaelClick(Sender : TObject);
     procedure ChkGraciaOffClick(Sender : TObject);
     procedure ChkInterceptClick(Sender : TObject);
@@ -211,7 +215,9 @@ begin
   LocalPort := round(JvSpinEdit2.Value);
   ChkAllowExit.Checked := Options.ReadBool('General', 'FastExit', false);
   ChkShowLogWinOnStart.Checked := Options.ReadBool('General', 'AutoShowLog', false);
-  rgProtocolVersion.ItemIndex := Min(Options.ReadInteger('Snifer', 'ProtocolVersion', 0), rgProtocolVersion.Items.Count);
+  //rgProtocolVersion.ItemIndex := Min(Options.ReadInteger('Snifer', 'ProtocolVersion', 0), rgProtocolVersion.Items.Count);
+  EditProtocolVersion.Text := Options.ReadString('Snifer', 'ProtocolVersion', '607');
+  Edit2bytesize.Text := Options.ReadString('General', '2bytesize', '255');
   chkNoFree.Checked := Options.ReadBool('General', 'NoFreeAfterDisconnect', false);
   chkRaw.Checked := Options.ReadBool('General', 'RAWdatarememberallowed', false);
   JvSpinEdit1.Value := Options.ReadFloat('General', 'interval', 5);
@@ -328,65 +334,8 @@ begin
     ShowLastPacket := ChkShowLastPacket.Checked;
     isprocesspackets := chkProcessPackets.Checked;
 
-    //для выбора соответствующего packets.ini
-    case rgProtocolVersion.ItemIndex of
-      0 :
-      begin
-        GlobalProtocolVersion := AION;
-      end;            //AION v 2.1
-      1 :
-      begin
-        GlobalProtocolVersion := AION27;
-      end;          //AION v 2.5
-      2 :
-      begin
-        GlobalProtocolVersion := CHRONICLE4;
-      end;      //С4
-      3 :
-      begin
-        GlobalProtocolVersion := CHRONICLE5;
-      end;      //C5
-      4 :
-      begin
-        GlobalProtocolVersion := INTERLUDE;
-      end;       //Интерлюд
-      5 :
-      begin
-        GlobalProtocolVersion := GRACIA;
-      end;          //Грация
-      6 :
-      begin
-        GlobalProtocolVersion := GRACIAFINAL;
-      end;     //Грация Финал
-      7 :
-      begin
-        GlobalProtocolVersion := GRACIAEPILOGUE;
-      end;  //Грация Эпилог
-      8 :
-      begin
-        GlobalProtocolVersion := FREYA;
-      end;           //Freya
-      9 :
-      begin
-        GlobalProtocolVersion := HIGHFIVE;
-      end;        //High Five
-      10 :
-      begin
-        GlobalProtocolVersion := GOD;
-      end;            //Goddess of Destruction
-      11 :
-      begin
-        GlobalProtocolVersion := GOD583;
-      end;
-      12 :
-      begin
-        GlobalProtocolVersion := GOD603;
-      end;
-      13 :
-      begin
-        GlobalProtocolVersion := GODxxx;
-      end;
-    end;
+    GlobalProtocolVersion := Options.ReadInteger('Snifer', 'ProtocolVersion', 607);
+    Global2bytesize := Options.ReadInteger('General', '2bytesize', 255);
     reload;     //перечитаем инишки
 
     fPacketFilter.LoadPacketsIni;
@@ -452,7 +401,9 @@ begin
   Options.WriteBool('General', 'iNewxor', iNewxor.Checked);
   Options.WriteBool('General', 'iInject', iInject.Checked);
   Options.WriteBool('General', 'AutoShowLog', ChkShowLogWinOnStart.Checked);
-  Options.WriteInteger('Snifer', 'ProtocolVersion', rgProtocolVersion.ItemIndex);
+  //Options.WriteInteger('Snifer', 'ProtocolVersion', rgProtocolVersion.ItemIndex);
+  Options.WriteString('Snifer', 'ProtocolVersion', EditProtocolVersion.Text);
+  Options.WriteString('General', '2bytesize', Edit2bytesize.Text);
   Options.WriteBool('General', 'NoFreeAfterDisconnect', chkNoFree.Checked);
   Options.WriteBool('General', 'RAWdatarememberallowed', chkRaw.Checked);
   Options.WriteInteger('General', 'LocalPort', round(JvSpinEdit2.Value));
@@ -768,17 +719,12 @@ end;
 
 procedure TfSettings.rgProtocolVersionClick(Sender : TObject);
 begin
-  //если больше чем Gracia = 5
-  ChkKamael.Checked := rgProtocolVersion.ItemIndex >= 5; // and (rgProtocolVersion.ItemIndex <= 7);
-  //если Айон 2.1 или Айон 2.5, то отключаем
-  ChkKamael.Enabled := ((rgProtocolVersion.ItemIndex <> 0) and (rgProtocolVersion.ItemIndex <> 1)); //AION
+  ChkKamael.Checked := true;
+  ChkKamael.Enabled := true;
   ChkGraciaOff.Enabled := ChkKamael.Enabled;
   ChkChangeParser.Enabled := true;
-
-  ChkAion.Enabled := ((rgProtocolVersion.ItemIndex = 0) or (rgProtocolVersion.ItemIndex = 1)); //AION
-  ChkAion.Checked := ((rgProtocolVersion.ItemIndex = 0) or (rgProtocolVersion.ItemIndex = 1)); //AION
-
-//  if InterfaceEnabled then GenerateSettingsFromInterface;
+  ChkAion.Enabled := false;
+  ChkAion.Checked := false;
 end;
 
 procedure TfSettings.FormCreate(Sender : TObject);

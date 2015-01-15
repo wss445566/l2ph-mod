@@ -286,45 +286,6 @@ var
         cur_pos := cur_pos + 2;
       end;
       // nlobp по подсказке alexteam
-      if GlobalProtocolVersion < FREYA then  //ниже Фрейи
-      begin
-        cur_pos := Pos(#$12, _1_byte_table);
-        x := _1_byte_table[$13];
-        _1_byte_table[$13] := #$12;
-        _1_byte_table[cur_pos] := x;
-
-        cur_pos := Pos(#$B1, _1_byte_table);
-        x := _1_byte_table[$B2];
-        _1_byte_table[$B2] := #$B1;
-        _1_byte_table[cur_pos] := x;
-      end
-      else
-      if GlobalProtocolVersion < GOD then  //Фрейя и HighFive
-      begin
-        cur_pos := Pos(#$11, _1_byte_table);
-        x := _1_byte_table[$12];
-        _1_byte_table[$12] := #$11;
-        _1_byte_table[cur_pos] := x;
-
-        cur_pos := Pos(#$D0, _1_byte_table);
-        x := _1_byte_table[$D1];
-        _1_byte_table[$D1] := #$D0;
-        _1_byte_table[cur_pos] := x;
-      end
-      else
-      if GlobalProtocolVersion = GOD then  //GoD
-      begin
-        cur_pos := Pos(#$73, _1_byte_table);
-        x := _1_byte_table[$74];
-        _1_byte_table[$74] := #$73;
-        _1_byte_table[cur_pos] := x;
-
-        cur_pos := Pos(#$74, _1_byte_table);
-        x := _1_byte_table[$75];
-        _1_byte_table[$75] := #$74;
-        _1_byte_table[cur_pos] := x;
-      end
-      else
       begin
         swap(pbyte(@_1_byte_table[$11 + 1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
         swap(pbyte(@_1_byte_table[$12 + 1])^, pbyte(@_1_byte_table[pos(#$12, _1_byte_table)])^);
@@ -386,24 +347,8 @@ begin
       end;
       if (buff[3] = #$2e) then
       begin
-      // nlobp по подсказке alexteam
-        if GlobalProtocolVersion < FREYA then
         begin
-          _init_tables(PInteger(@buff[$16])^, $80);
-        end //ниже Фрейи
-        else
-        if GlobalProtocolVersion < GOD then
-        begin
-          _init_tables(PInteger(@buff[$16])^, $86);
-        end //Фрейя, HighFive
-        else
-        if GlobalProtocolVersion = GOD then
-        begin //GoD
-          _init_tables(PInteger(@buff[$16])^, $C5);
-        end
-        else
-        begin
-          _init_tables(PInteger(@buff[$16])^, $FF);
+          _init_tables(PInteger(@buff[$16])^, Global2bytesize);
         end;
       end;
     end
@@ -629,26 +574,6 @@ begin
           xorC.InitKey(Packet.Data[3], 2);
           xorS.InitKey(Packet.Data[3], 2);
           SetInitXORAfterEncode := true;
-        end;
-      end;
-      // E4=sm_l2auth_login_check Aion 2.1
-      $E4 :
-      begin
-        if (GlobalProtocolVersion = AION) then
-        begin
-          CharName := WideStringToString(PWideChar(@Packet.Data[7]), 1251);
-        //Получено имя соединения
-          sendAction(TencDec_Action_GotName);
-        end;
-      end;
-      // 01E7=sm_l2auth_login_check Aion 2.7
-      $E7 :
-      begin
-        if (GlobalProtocolVersion = AION27) then
-        begin
-          CharName := WideStringToString(PWideChar(@Packet.Data[9]), 1251);
-        //Получено имя соединения
-          sendAction(TencDec_Action_GotName);
         end;
       end;
     //если нет подходящих пакетов
