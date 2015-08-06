@@ -124,6 +124,7 @@ var
   isshow : boolean;
   FuncNames, FuncParamNames, FuncParamTypes, FuncParamNumbers : TStringList;
   value, tmp_value, typ, name_, func, tmp_param, param1, param2, tmp_param1, tmp_param2, tmp_param12 : string;
+  valuepool : array[1..9] of integer;
 
 procedure TfPacketView.addtoHex(Str : string);
 begin
@@ -164,6 +165,11 @@ begin
   templateindex := 0;
   hexvalue := '';
   case typ[1] of
+    'v' :
+    begin
+      value := IntToStr(valuepool[Strtoint(typ[2])]);
+      hexvalue := ' (0x' + inttohex(Strtoint(value), 8) + ')';
+    end;
     'd' :
     begin
       value := IntToStr(PInteger(@PktStr[PosInPkt])^);
@@ -303,11 +309,18 @@ begin
 end;
 //-------------
 function TfPacketView.GetTyp(s : string) : string;
+var
+  k,kk : integer;
 begin
   //d(Count:For.0001)
   //d(Count:Get.Func01)
   //-(40)
-  Result := s[1];
+  Result := '';
+  k := Pos('(', s);
+  for kk := 1 to k-1 do
+  begin
+    Result := Result + s[kk];
+  end;
 end;
 
 function TfPacketView.GetName(s : string) : string;
@@ -1351,6 +1364,12 @@ begin
   if Func = 'GET' then
   begin
     fGet();
+  end
+  else
+  if Func = 'SAVE' then
+  begin
+    valuepool[Strtoint(param1)] := Strtoint(value);
+	addToDescr(offset, typ, name_, value + hexvalue);
   end
   else
   begin

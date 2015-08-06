@@ -6,7 +6,7 @@ if not exist build\l2ph.exe (
   exit /b 2
 )
 
-::del /q *.7z
+del /q *.7z
 
 rd /s /q l2ph-mod
 md l2ph-mod
