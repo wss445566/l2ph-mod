@@ -282,17 +282,17 @@ begin
     begin
       LoadPktIni('packetsGOD.ini');
     end;                        //пакеты для Goddess of Destruction
-    GOD583 :
+    ERTHEIA :
     begin
-      LoadPktIni('packetsGOD583.ini');
+      LoadPktIni('packetsErtheia.ini');
     end;
-    GOD603 :
+    INFINITEODYSSEY :
     begin
-      LoadPktIni('packetsGOD603.ini');
+      LoadPktIni('packetsOdyssey.ini');
     end;
-    GODxxx :
+    CLASSIC :
     begin
-      LoadPktIni('packetsGODxxx.ini');
+      LoadPktIni('packetsClassic.ini');
     end;
   end;
 

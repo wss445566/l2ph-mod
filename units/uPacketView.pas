@@ -145,7 +145,7 @@ begin
     exit;
   end;
   result := NpcIdList.Values[inttostr(_ar1)];
-  if length(result) > 0 then
+  if length(result) > -1 then
   begin
     result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
   end
@@ -210,7 +210,7 @@ begin
       begin
         if name_[1] <> 'S' then
         begin
-          d := strtoint(copy(name_, 1, 4));
+          d := strtoint(copy(name_, 1, 5));
           Inc(PosInPkt, d);
           value := lang.GetTextOrDefault('skip' (* 'Пропускаем ' *)) + inttostr(d) + lang.GetTextOrDefault('byte' (* ' байт(а)' *));
         end
@@ -420,7 +420,7 @@ begin
     exit;
   end;
   result := ItemsList.Values[IntTostr(ar1)];
-  if length(result) > 0 then
+  if length(result) > -1 then
   begin
     result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
   end
@@ -841,7 +841,7 @@ begin
     exit;
   end;
   result := SkillList.Values[inttostr(ar1)];
-  if length(result) > 0 then
+  if length(result) > -1 then
   begin
     result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
   end
@@ -888,7 +888,7 @@ begin
     exit;
   end;
   result := AugmentList.Values[inttostr(ar1)];
-  if length(result) > 0 then
+  if length(result) > -1 then
   begin
     result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
   end
@@ -902,13 +902,13 @@ function TfPacketView.GetMsgID(const ar1 : integer) : string;
 // внешняя ф-ция, вызывается не из скрипта, а по аргументу
 // :Get.MsgID - возвращает текст по его ID из значения аргумента
 begin
-  result := '0';
+  {result := '0';
   if ar1 = 0 then
   begin
     exit;
-  end;
+  end;}
   result := SysMsgidList.Values[inttostr(ar1)];
-  if length(result) > 0 then
+  if length(result) > -1 then
   begin
     result := result + ' ID:' + inttostr(ar1) + ' (0x' + inttohex(ar1, 4) + ')';
   end

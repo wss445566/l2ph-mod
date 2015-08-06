@@ -243,6 +243,14 @@ var
     b := tmp;
   end;
 
+  procedure swap2(var a, b : word);
+  var
+    tmp : word;
+  begin
+    tmp := a;
+    a := b;
+    b := tmp;
+  end;
 
   procedure _init_tables(seed : integer; _2_byte_size : integer);
   var
@@ -265,7 +273,15 @@ var
       end;
       for i := 0 to _2_byte_size do
       begin
-        _2_byte_table := _2_byte_table + chr(i) + #$0;
+        // _2_byte_table := _2_byte_table + chr(i) + #$0;
+        if i < 256 then
+        begin
+          _2_byte_table := _2_byte_table + chr(i) + #$00;
+        end
+        else
+        begin
+          _2_byte_table := _2_byte_table + chr(i-256) + #$01;
+        end;
       end;
       _pseudo_srand(seed);
       for i := 2 to $D1 do
@@ -326,10 +342,12 @@ var
       end
       else
       begin
-        swap(pbyte(@_1_byte_table[$11 + 1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
         swap(pbyte(@_1_byte_table[$12 + 1])^, pbyte(@_1_byte_table[pos(#$12, _1_byte_table)])^);
         swap(pbyte(@_1_byte_table[$B1 + 1])^, pbyte(@_1_byte_table[pos(#$B1, _1_byte_table)])^);
+        swap(pbyte(@_1_byte_table[$11 + 1])^, pbyte(@_1_byte_table[pos(#$11, _1_byte_table)])^);
         swap(pbyte(@_1_byte_table[$D0 + 1])^, pbyte(@_1_byte_table[pos(#$D0, _1_byte_table)])^);
+        swap2(pword(@_2_byte_table[$70 * 2 + 1])^, pword(@_2_byte_table[pos(#$70#$00, _2_byte_table)])^);
+        swap2(pword(@_2_byte_table[$71 * 2 + 1])^, pword(@_2_byte_table[pos(#$71#$00, _2_byte_table)])^);
       end;
       if seed = 0 then
       begin
@@ -343,6 +361,8 @@ var
   end;
 
   procedure _decode_ID;
+  var
+    _index : integer;
   begin
     with CorrectorData^ do
     begin
@@ -353,7 +373,10 @@ var
         begin
           // error!
         end;
-        buff[4] := _2_byte_table[byte(buff[4]) * 2 + 1];
+        // buff[4] := _2_byte_table[byte(buff[4]) * 2 + 1];
+        _index := byte(buff[4]) + byte(buff[5]) * 256;
+        buff[4] := _2_byte_table[_index * 2 + 1];
+        buff[5] := _2_byte_table[_index * 2 + 2];
       end;
     end;
   end;
@@ -361,13 +384,26 @@ var
   procedure _encode_ID;
   var
     p : integer;
+    temp_p : integer;
   begin
     with CorrectorData^ do
     begin
       if buff[3] = #$D0 then
       begin
-        p := pos(buff[4], _2_byte_table);
-        buff[4] := char(((p + 1) shr 1) - 1);
+        // p := pos(buff[4], _2_byte_table);
+        // buff[4] := char(((p + 1) shr 1) - 1);
+        p := pos(buff[4] + buff[5], _2_byte_table);
+        temp_p := ((p + 1) shr 1) - 1;
+        if temp_p < 256 then
+        begin
+          buff[4] := char(temp_p);
+          buff[5] := #$00;
+        end
+        else
+        begin
+          buff[4] := char(temp_p - 256);
+          buff[5] := #$01;
+        end;
       end;
       p := pos(buff[3], _1_byte_table);
       buff[3] := char(p - 1);
@@ -403,7 +439,8 @@ begin
         end
         else
         begin
-          _init_tables(PInteger(@buff[$16])^, $FF);
+          // _init_tables(PInteger(@buff[$16])^, $FF);
+          _init_tables(PInteger(@buff[$16])^, 269);
         end;
       end;
     end
@@ -561,8 +598,8 @@ begin
           begin
             Inc(Offset, 2);
           end;
-          SetLength(WStr, round((Offset + 0.5) / 2));
-          Move(Packet.Data[1], WStr[1], Offset);
+          SetLength(WStr, round((Offset - 1) / 2));
+          Move(Packet.Data[1], WStr[1], Offset - 1);
           CharName := WideStringToString(WStr, 1251);
 //                    if (Settings.isGraciaOff) then
 //                    begin

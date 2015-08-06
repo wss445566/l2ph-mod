@@ -2,7 +2,7 @@ object fPacketFilter: TfPacketFilter
   Left = 364
   Top = 258
   BorderStyle = bsSizeToolWin
-  Caption = #1060#1080#1083#1100#1090#1088' '#1087#1072#1082#1077#1090#1086#1074
+  Caption = #212#232#235#252#242#240' '#239#224#234#229#242#238#226
   ClientHeight = 458
   ClientWidth = 326
   Color = clBtnFace
@@ -24,10 +24,8 @@ object fPacketFilter: TfPacketFilter
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 358
     object TabSheet1: TTabSheet
-      Caption = #1054#1090' '#1089#1077#1088#1074#1077#1088#1072
-      ExplicitHeight = 330
+      Caption = #206#242' '#241#229#240#226#229#240#224
       object ListView1: TJvListView
         Left = 0
         Top = 0
@@ -56,13 +54,11 @@ object fPacketFilter: TfPacketFilter
           end
           item
           end>
-        ExplicitHeight = 330
       end
     end
     object TabSheet7: TTabSheet
-      Caption = #1054#1090' '#1082#1083#1080#1077#1085#1090#1072
+      Caption = #206#242' '#234#235#232#229#237#242#224
       ImageIndex = 1
-      ExplicitHeight = 330
       object ListView2: TJvListView
         Left = 0
         Top = 0
@@ -91,7 +87,6 @@ object fPacketFilter: TfPacketFilter
           end
           item
           end>
-        ExplicitHeight = 330
       end
     end
   end
@@ -122,7 +117,7 @@ object fPacketFilter: TfPacketFilter
       Top = 30
       Width = 150
       Height = 19
-      Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1074#1089#1105
+      Caption = #194#251#228#229#235#232#242#252' '#226#241#184
       TabOrder = 0
       OnClick = Button1Click
     end
@@ -131,7 +126,7 @@ object fPacketFilter: TfPacketFilter
       Top = 30
       Width = 150
       Height = 19
-      Caption = #1048#1085#1074#1077#1088#1090#1080#1088#1086#1074#1072#1090#1100
+      Caption = #200#237#226#229#240#242#232#240#238#226#224#242#252
       TabOrder = 1
       OnClick = Button13Click
     end
@@ -140,7 +135,7 @@ object fPacketFilter: TfPacketFilter
       Top = 55
       Width = 150
       Height = 19
-      Caption = #1055#1088#1080#1084#1077#1085#1080#1090#1100
+      Caption = #207#240#232#236#229#237#232#242#252
       TabOrder = 2
       OnClick = UpdateBtnClick
     end

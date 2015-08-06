@@ -251,6 +251,7 @@ begin
     'WriteD(0);'#10#13 +
     'WriteD(10);'#10#13 +
     'WriteS('''');'#10#13 +
+    'WriteD(-1);'#10#13 +
     'WriteS(''Hello!!!'');'#10#13 +
     'SendToClient;'#10#13 +
     'end.');
@@ -470,7 +471,7 @@ procedure TfVisual.ListView5CustomDrawItem(Sender : TCustomListView; Item : TLis
 begin
   if item.ImageIndex = 0 then
   begin
-//        listview5.Canvas.Brush.Color := $ffeeee;
+    listview5.Canvas.Brush.Color := $ffccbb;
   end
   else
   begin

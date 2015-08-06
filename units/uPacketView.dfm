@@ -26,8 +26,8 @@ object fPacketView: TfPacketView
     Width = 451
     Height = 13
     Align = alTop
-    Caption = #1055#1072#1082#1077#1090':'
-    ExplicitWidth = 34
+    Caption = #207#224#234#229#242':'
+    ExplicitWidth = 30
   end
   object rvHEX: TRichView
     Left = 0
@@ -63,8 +63,8 @@ object fPacketView: TfPacketView
       Width = 451
       Height = 13
       Align = alTop
-      Caption = #1044#1077#1090#1072#1083#1100#1085#1072#1103' '#1088#1072#1089#1096#1080#1092#1088#1086#1074#1082#1072':'
-      ExplicitWidth = 132
+      Caption = #196#229#242#224#235#252#237#224#255' '#240#224#241#248#232#244#240#238#226#234#224':'
+      ExplicitWidth = 122
     end
     object Splitter2: TSplitter
       Left = 0
@@ -311,12 +311,12 @@ object fPacketView: TfPacketView
     Left = 104
     Top = 40
     object N1: TMenuItem
-      Caption = #1055#1077#1088#1077#1085#1086#1089' '#1089#1083#1086#1074
+      Caption = #207#229#240#229#237#238#241' '#241#235#238#226
       Checked = True
       OnClick = N1Click
     end
     object N2: TMenuItem
-      Caption = #1055#1086#1082#1072#1079#1072#1090#1100' '#1084#1072#1089#1082#1080' '#1080' '#1074#1072#1088#1080#1072#1085#1090' '#1086#1073#1100#1103#1074#1083#1077#1085#1080#1103
+      Caption = #207#238#234#224#231#224#242#252' '#236#224#241#234#232' '#232' '#226#224#240#232#224#237#242' '#238#225#252#255#226#235#229#237#232#255
       OnClick = N2Click
     end
   end

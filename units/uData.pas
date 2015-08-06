@@ -891,7 +891,8 @@ begin
     buf := Scripter.Variables['buf'];
     tmp := Params[0];
     temp := tmp;//StringToWideString(tmp,1251);
-    tmp := tmp + tmp;
+    //tmp := tmp + tmp;
+    SetLength(tmp, Length(temp) * 2);
     Move(temp[1], tmp[1], Length(tmp));
     buf := buf + tmp + #0#0;
     Scripter.Variables['buf'] := buf;

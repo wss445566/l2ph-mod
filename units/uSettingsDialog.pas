@@ -172,9 +172,9 @@ begin
   Application.ProcessMessages;
 
   InterfaceEnabled := false;
-  wlimit := Options.ReadInteger('General', 'wlimit', 99);
+  wlimit := Options.ReadInteger('General', 'wlimit', 20);
   editwlimit.text := inttostr(wlimit);
-  looplimit := Options.ReadInteger('General', 'looplimit', 999);
+  looplimit := Options.ReadInteger('General', 'looplimit', 500);
   editlooplimit.text := inttostr(looplimit);
 
   //максимальное количество строк в логе
@@ -292,8 +292,8 @@ procedure TfSettings.GenerateSettingsFromInterface;
 begin
   with GlobalSettings do
   begin
-    wlimit := Options.ReadInteger('General', 'wlimit', 99);
-    looplimit := Options.ReadInteger('General', 'looplimit', 999);
+    wlimit := Options.ReadInteger('General', 'wlimit', 20);
+    looplimit := Options.ReadInteger('General', 'looplimit', 500);
     //oldProto := GlobalProtocolVersion;
     isNoDecrypt := ChkNoDecrypt.Checked;
     isChangeParser := ChkChangeParser.Checked;
@@ -376,15 +376,15 @@ begin
       end;            //Goddess of Destruction
       11 :
       begin
-        GlobalProtocolVersion := GOD583;
+        GlobalProtocolVersion := ERTHEIA;
       end;
       12 :
       begin
-        GlobalProtocolVersion := GOD603;
+        GlobalProtocolVersion := INFINITEODYSSEY;
       end;
       13 :
       begin
-        GlobalProtocolVersion := GODxxx;
+        GlobalProtocolVersion := CLASSIC;
       end;
     end;
     reload;     //перечитаем инишки
