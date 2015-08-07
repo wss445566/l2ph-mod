@@ -51,6 +51,7 @@ type
 
   private
     { Private declarations }
+    procedure skip();
     procedure fParseAndProcess();
     procedure fParse;
     procedure fGet;
@@ -126,6 +127,85 @@ var
   value, tmp_value, typ, name_, func, tmp_param, param1, param2, tmp_param1, tmp_param2, tmp_param12 : string;
   valuepool : array[1..9] of integer;
 
+
+procedure TfPacketView.skip();
+var 
+  _i, _s, _e : integer;
+  _f : string;
+begin
+  Param0 := GetType(StrIni, PosInIni);
+  inc(PosInIni);
+  typ := GetTyp(Param0);
+  name_ := GetName(Param0);
+  func := uppercase(GetFunc(Param0));
+  param1 := uppercase(GetParam(Param0));
+  param2 := GetParam2(Param0);
+  _f := func;
+
+  if _f = 'LOOPM' then
+  begin
+    _s := Strtoint(param1);
+    _e := Strtoint(param2);
+    for _i := 1 to _s-1 do
+    begin
+      skip();
+    end;
+    for _i := 1 to _e do
+    begin
+      skip();
+    end;
+  end
+  else
+  if _f = 'LOOP' then
+  begin
+    _s := Strtoint(param1);
+    _e := Strtoint(param2);
+    for _i := 1 to _s-1 do
+    begin
+      skip();
+    end;
+    for _i := 1 to _e do
+    begin
+      skip();
+    end;
+  end
+  else
+  if _f = 'SWITCH' then
+  begin
+    _s := Strtoint(param1);
+    _e := Strtoint(param2);
+    for _i := 1 to _s do
+    begin
+      skip();
+    end;
+    for _i := 1 to _e do
+    begin
+      skip();
+    end;
+  end
+  else
+  if _f = 'CASE' then
+  begin
+    _s := Strtoint(param1);
+    _e := Strtoint(param2);
+    for _i := 1 to _e do
+    begin
+      skip();
+    end;
+  end
+  else
+  if _f = 'CASEAND' then
+  begin
+    _s := Strtoint(param1);
+    _e := Strtoint(param2);
+    for _i := 1 to _e do
+    begin
+      skip();
+    end;
+  end;
+end;
+  
+  
 procedure TfPacketView.addtoHex(Str : string);
 begin
   inc(itemTag);
@@ -1421,8 +1501,7 @@ begin
       begin
         for j := 1 to casedefcount do
         begin
-          Param0 := GetType(StrIni, PosInIni);
-          inc(PosInIni);
+          skip();
         end;
       end;
     end
@@ -1441,8 +1520,7 @@ begin
       begin
         for j := 1 to casedefcount do
         begin
-          Param0 := GetType(StrIni, PosInIni);
-          inc(PosInIni);
+          skip();
         end;
       end;
     end;
@@ -1474,8 +1552,7 @@ begin
         //пропускаем данные входящие в Loop
     for i := 1 to loopdefsize do
     begin
-      Param0 := GetType(StrIni, PosInIni);
-      inc(PosInIni);
+      skip();
     end;
   end
   else
@@ -1553,8 +1630,7 @@ begin
         //пропускаем данные входящие в Loop
     for i := 1 to StrToInt(param2) do
     begin
-      Param0 := GetType(StrIni, PosInIni);
-      inc(PosInIni);
+      skip();
     end;
   end
   else
@@ -1629,9 +1705,7 @@ begin
     begin
       //где то тут проверять
       // if (PosInIni<Length(StrIni))and(PosInPkt<sizze+10)
-
-      Param0 := GetType(StrIni, PosInIni);
-      inc(PosInIni);
+      skip();
     end;
   end
   else
